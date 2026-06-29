@@ -124,5 +124,5 @@ def save_combined_mesh(msh_file, output_path, fracture_label="fracture"):
         cell_data={"MaterialIDs": valid_material_ids}
     )
     combined_mesh.write(output_path)
-    print(f"Combined mesh saved to: {output_path}")
+    # print(f"Combined mesh saved to: {output_path}") #silent in multimesh evaluation
 
