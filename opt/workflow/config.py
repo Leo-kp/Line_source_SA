@@ -19,7 +19,7 @@ BASE_DIR=CODE_DIR.parent if CODE_DIR.name=="workflow" else CODE_DIR
 #OGS init and env
 
 MANUAL_OGS_PATH= r"C:\OGS_Binary\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
-
+OGS_PYTHON_EXE= r"C:\Miniforge-Data\envs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
 def set_ogs_environment():
 
     if MANUAL_OGS_PATH:
@@ -89,12 +89,14 @@ RUNTIME_PRJ  = RUN_DIR/ "BH10_20180718_40.6_temp.prj"
 FIELD_DATA_PATH = DATA_DIR/"BH10_20180718_40.6_SR_v2.csv"
 ACTIVE_MESH_PATH =MESH_DIR /"symmetric_cylinder_3D.msh"
 
-for folder in [MESH_DIR, OUT_DIR, RUN_DIR,  DATA_DIR]:
-    folder.mkdir(parents=True, exist_ok=True)
+def initialize_project_folders(): #not hanging execution, so wrapped in function
+    for folder in [MESH_DIR, OUT_DIR, RUN_DIR,  DATA_DIR]:
+        folder.mkdir(parents=True, exist_ok=True)
 
-if WORKFLOW_DATA.exists() and not  FIELD_DATA_PATH.exists():
-    shutil.copy2(WORKFLOW_DATA,FIELD_DATA_PATH)
+    if WORKFLOW_DATA.exists() and not  FIELD_DATA_PATH.exists():
+        shutil.copy2(WORKFLOW_DATA,FIELD_DATA_PATH)
 
+initialize_project_folders()
 
 #------------------------------------------
 #bounds and factors to optmise

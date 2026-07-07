@@ -175,31 +175,28 @@ def save_combined_mesh(msh_file, output_path, fracture_label="fracture"):
 
     #----------------------------------------------------
 
-MSH_FILE=ACTIVE_MESH_PATH
-h=0.7 #mesh as in field data
-r_well=0.038
-thickness=h
-mesh_size=thickness/4
-refine_well=thickness/20 #thickness/20
-refine_frac=thickness/30 #thickness/30 #smaller than well refinining
+def generate_optimization_mesh(MSH_FILE=ACTIVE_MESH_PATH):#wraper for safe execution in modules
+    h=0.7 #mesh as in field data
+    create_rectangle_frac_mesh_v3(
+        MSH_FILE,
+        radius= 100,
+        height= h,
+        mesh_size= h/4,
+        center_z=-40.6,
+        r_well = 0.038,
+        length = 0.5,
+        refine_well = h/20,  # Element size at the well
+        refine_frac = h/30   # Element size along the fracture
+    ) 
 
-create_rectangle_frac_mesh_v3(
-    MSH_FILE,
-    radius= 100,
-    height= thickness,
-    mesh_size= mesh_size,
-    center_z=-40.6,
-    r_well = r_well,
-    length = 0.5,
-    refine_well = refine_well,  # Element size at the well
-    refine_frac = refine_frac   # Element size along the fracture
-) 
+    meshes = ot.Meshes.from_gmsh(MSH_FILE, log=False)
+    for name, mesh in meshes.items():
+        vtu_path = (MESH_DIR / f"rectangle_{name}.vtu").as_posix()
+        pv.save_meshio(vtu_path, mesh)
+        #print(f"Saved {vtu_path}")
 
-meshes = ot.Meshes.from_gmsh(MSH_FILE, log=False)
-for name, mesh in meshes.items():
-    vtu_path = (MESH_DIR / f"rectangle_{name}.vtu").as_posix()
-    pv.save_meshio(vtu_path, mesh)
-    #print(f"Saved {vtu_path}")
+    combined_vtu = (MESH_DIR / "combined_fracture_mesh.vtu").as_posix()
+    save_combined_mesh(MSH_FILE, combined_vtu)
 
-combined_vtu = (MESH_DIR / "combined_fracture_mesh.vtu").as_posix()
-save_combined_mesh(MSH_FILE, combined_vtu)
+if __name__=="__main__":
+    generate_optimization_mesh()

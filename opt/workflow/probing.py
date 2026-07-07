@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import ogstools as ot
 from pathlib import Path
@@ -8,7 +9,7 @@ def extract_values(OUT_DIR):
     r_st=0.038 
     coords = np.array([[r_st, y, 1e-18]])
     
-    pvd_files = list(Path(OUT_DIR).glob("*.pvd"))
+    pvd_files = list(Path(OUT_DIR).glob("*.pvd")) #avoidin locking memory so use glob()
     if not pvd_files:
         raise FileNotFoundError(f"No .pvd file found in {OUT_DIR}")
     
@@ -22,16 +23,24 @@ def extract_values(OUT_DIR):
     clean_p = np.squeeze(raw_pressure_array) #or raw_pressure_array()[:,0] taking the one point scalar
 
     data_bundle = {
-        'values': clean_p, 
-        'timevalues': np.array(ms.timevalues),
-        'metadata': {
-            'variable_name': 'pressure',
-            'unit': 'MPa',
-            'time_unit': 's',
-            'coordinates': coords,
-            'source_file': str(pvd_path)
-        }
-    }
+        "values": clean_p.tolist() if isinstance(clean_p,np.ndarray) else [float(clean_p)],
+        "timevalues": np.array(ms.timevalues).tolist()
+    } #optimising saving and internal processing of results
 
     return data_bundle
+
+if __name__ == "__main__": #standalone execution
+    if len(sys.argv)>2:
+        target_out_dir=sys.argv[1] #output OGS files
+        destination_npy_path=sys.argv[2] #save npy extracted
+
+        try: 
+            extract_bundle = extract_values(target_out_dir)
+            np.save(destination_npy_path,extract_bundle)
+            sys.exit(0)
+        except Exception as err:
+            print(f"Error: {str(err)}")
+            sys.exit(1)
+
+
 

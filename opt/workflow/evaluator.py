@@ -1,5 +1,5 @@
 import numpy as np
-import skopt import Optimizer
+from skopt import Optimizer
 from skopt.space import Real
 
 class BayesianEvaluator:

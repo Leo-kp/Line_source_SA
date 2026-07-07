@@ -20,4 +20,4 @@ def temp_prj(prj_in, prj_out,factors):
         print(f"CRITICAL ERROR in PRJ update: {e}")
         raise # Stop the loop if the input file is not correctly updated
 
-    model.write_input()
+    model.write_input(prj_out)
