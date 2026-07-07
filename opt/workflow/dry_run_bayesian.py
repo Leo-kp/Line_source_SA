@@ -1,12 +1,11 @@
 import numpy as np
-from  skopt import gp_minimize
 from skopt import Optimizer
 from skopt.space import Real
 import pandas as pd
 
 from pathlib import Path
 from functions import objective_function
-import random
+
 
 cwd=Path.cwd()
 fieldata= pd.read_csv(cwd/'BH10_20180718_40.6_SR_v2.csv',header=0)
