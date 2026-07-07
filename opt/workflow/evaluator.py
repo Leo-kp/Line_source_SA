@@ -1,10 +1,39 @@
-import os
-import subprocess
 import numpy as np
-from contextlib import chdir
+import skopt import Optimizer
+from skopt.space import Real
 
-from prj_mod import calculate_keff, temp_prj
-from interp import objective_function
+class BayesianEvaluator:
+    def __ini__(self, x_filtered,y_pure_floats):
+        "Initialising optimiyer"
 
+        pjack_data= [point[0] for point in x_filtered]
+        wr_data= [point[1] for point in x_filtered]
 
-def run_iteration(factors, datafield, RUN_DIR, prj_name, OGS_BIN_DIR):
+        pjack_min, pjack_max= min(pjack_data), max(pjack_data)
+        wr_min, wr_max= min(wr_data), max(wr_data)
+
+        pjack_padding=(pjack_max - pjack_min)*0.01
+        wr_padding= (wr_max - wr_min)*0.01
+
+        self.search_space=[ #to avoid point outside search space
+            Real(pjack_min-pjack_padding, pjack_max+pjack_padding,name='pjack'),
+            Real(wr_min-wr_padding, wr_max+wr_padding,name='wr')
+        ]
+
+        self.optimizer= Optimizer(
+            dimensions=self.search_space,
+            base_estimator="GP",
+            acq_func="EI",
+            random_state=42
+        )
+
+        self.ptimizer.tell(x_filtered,y_pure_floats,fit=True)
+    
+    def ask_next_point(self):
+        "Ask skopt for next optimal [pjack,wr]"
+        return self.optimizer.ask()
+    
+    def tell_new_results(self, point, cost_score):
+        "Updates GP surface with OGS results"
+        self.optimizer.tell(point,float(cost_score))
+    
