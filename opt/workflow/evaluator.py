@@ -3,7 +3,7 @@ from skopt import Optimizer
 from skopt.space import Real
 
 class BayesianEvaluator:
-    def __ini__(self, x_filtered,y_pure_floats):
+    def __init__(self, x_filtered,y_pure_floats):
         "Initialising optimiyer"
 
         pjack_data= [point[0] for point in x_filtered]
@@ -15,7 +15,7 @@ class BayesianEvaluator:
         pjack_padding=(pjack_max - pjack_min)*0.01
         wr_padding= (wr_max - wr_min)*0.01
 
-        self.search_space=[ #to avoid point outside search space
+        self.search_space=[ #to avoid point outside search space is bounded
             Real(pjack_min-pjack_padding, pjack_max+pjack_padding,name='pjack'),
             Real(wr_min-wr_padding, wr_max+wr_padding,name='wr')
         ]
@@ -27,7 +27,7 @@ class BayesianEvaluator:
             random_state=42
         )
 
-        self.ptimizer.tell(x_filtered,y_pure_floats,fit=True)
+        self.optimizer.tell(x_filtered,y_pure_floats,fit=True)
     
     def ask_next_point(self):
         "Ask skopt for next optimal [pjack,wr]"
