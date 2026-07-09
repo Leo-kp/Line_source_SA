@@ -71,7 +71,7 @@ print(f"[CONFIG] Env loaded. OGS threads manually set to: {USE_NUM_THREADS}")
 #---------------------------------------
 #Folder three and dirs with files
 MESH_DIR = BASE_DIR/"mesh"
-OUT_DIR = BASE_DIR/"out"
+OUT_DIR = BASE_DIR/"out" #simpler than Path(os.environ.get()) for local execution
 RUN_DIR= BASE_DIR/"run"
 DATA_DIR=BASE_DIR/"data"
 MORRIS_DIR=BASE_DIR.parent
@@ -85,9 +85,16 @@ MORRIS_RAW_DATA_DIR=RESULTS_DIR/"results/raw_data"
 TEMPLATE_PRJ = CODE_DIR/ "BH10_20180718_40.6_opt.prj"
 WORKFLOW_DATA = CODE_DIR/"BH10_20180718_40.6_SR_v2.csv"
 
-RUNTIME_PRJ  = RUN_DIR/ "BH10_20180718_40.6_temp.prj"
+RUNTIME_PRJ  = OUT_DIR/ "BH10_20180718_40.6_temp.prj"
 FIELD_DATA_PATH = DATA_DIR/"BH10_20180718_40.6_SR_v2.csv"
-ACTIVE_MESH_PATH =MESH_DIR /"symmetric_cylinder_3D.msh"
+
+MESH_FILENAME= "symmetric_cylinder_3D.msh"
+STATIC_MESH_PATH =MESH_DIR / MESH_FILENAME
+DYNAMIC_MESH_PATH= OUT_DIR/MESH_FILENAME
+
+IS_MESH_DYNAMIC=False
+ACTIVE_MESH_PATH= DYNAMIC_MESH_PATH if IS_MESH_DYNAMIC else STATIC_MESH_PATH
+STATIC_MESH_PREFIX=f"../{MESH_DIR.name}"
 
 def initialize_project_folders(): #not hanging execution, so wrapped in function
     for folder in [MESH_DIR, OUT_DIR, RUN_DIR,  DATA_DIR]:

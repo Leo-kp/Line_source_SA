@@ -1,9 +1,10 @@
 import ogstools as ot
+from pathlib import Path
 
 #--------------------------------------------------
 #prj updater function
 
-def temp_prj(prj_in, prj_out,factors): 
+def temp_prj(prj_in: Path, prj_out:Path,factors:dict, is_dynamic:bool,static_prefix:str): 
 
     keff=factors['keff']
 
@@ -13,8 +14,24 @@ def temp_prj(prj_in, prj_out,factors):
     xpath='./curves/curve[name="k_curve"]/values'
     medium=1
 
+    root_xml=model.root
+    meshes_block=root_xml.find("./meshes")
+
     try:
         model.replace_text(values_str,xpath)
+        
+        if meshes_block is not None:
+            for mesh_element in meshes_block.findall('mesh axially_symmetric="true"'):
+                current_mesh_name= mesh_element.text.strip()
+                raw_filename= Path(current_mesh_name).name
+
+                if is_dynamic:
+                    mesh_element.text= raw_filename
+                else:
+                    mesh_element.text=f"{static_prefix}{raw_filename}"
+        else:
+            print("Warning: No <meshes> block in project file structure")
+
 
     except Exception as e:
         print(f"CRITICAL ERROR in PRJ update: {e}")
