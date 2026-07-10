@@ -44,7 +44,7 @@ OGS_BIN_DIR = set_ogs_environment()
 
 if OGS_BIN_DIR:
     os.environ["OGS_BIN_PATH"] = str(OGS_BIN_DIR)
-    os.environ["PATH"]= f"{OGS_BIN_DIR}{os.pathsep}{os.environ.get('PAHT','')}"
+    os.environ["PATH"]= f"{OGS_BIN_DIR}{os.pathsep}{os.environ.get('PATH','')}"
 
     OGS_BINARY = OGS_BIN_DIR/("ogs.exe") if os.name== "nt" else "ogs"
 else:

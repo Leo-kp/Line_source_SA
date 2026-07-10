@@ -7,7 +7,7 @@ import pyvista as pv
 
 import numpy as np
 
-from config import MESH_DIR, ACTIVE_MESH_PATH
+import config 
 
 
 #---------------------------------------
@@ -175,7 +175,9 @@ def save_combined_mesh(msh_file, output_path, fracture_label="fracture"):
 
     #----------------------------------------------------
 
-def generate_optimization_mesh(MSH_FILE=ACTIVE_MESH_PATH):#wraper for safe execution in modules
+def generate_optimization_mesh(MSH_FILE=None):#wraper for safe execution in modules, None combined with if ...is None ensures dynamic udpate
+    if MSH_FILE is None:
+        MSH_FILE=config.ACTIVE_MESH_PATH
     h=0.7 #mesh as in field data
     create_rectangle_frac_mesh_v3(
         MSH_FILE,
@@ -191,11 +193,11 @@ def generate_optimization_mesh(MSH_FILE=ACTIVE_MESH_PATH):#wraper for safe execu
 
     meshes = ot.Meshes.from_gmsh(MSH_FILE, log=False)
     for name, mesh in meshes.items():
-        vtu_path = (MESH_DIR / f"rectangle_{name}.vtu").as_posix()
+        vtu_path = (config.MESH_DIR / f"rectangle_{name}.vtu").as_posix()
         pv.save_meshio(vtu_path, mesh)
         #print(f"Saved {vtu_path}")
 
-    combined_vtu = (MESH_DIR / "combined_fracture_mesh.vtu").as_posix()
+    combined_vtu = (config.MESH_DIR / "combined_fracture_mesh.vtu").as_posix()
     save_combined_mesh(MSH_FILE, combined_vtu)
 
 if __name__=="__main__":

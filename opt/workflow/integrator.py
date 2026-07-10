@@ -25,7 +25,7 @@ class OptimizationIntegrator:
 
         x_history, y_history = self._load_morris_history()
 
-        self.evaluator = BayesianEvaluator()
+        self.evaluator = BayesianEvaluator(x_history,y_history)
 
     def _load_morris_history(self):
         """
@@ -41,7 +41,12 @@ class OptimizationIntegrator:
         if not history_files:
             raise FileNotFoundError(f"No historical morris found in {config.MORRIS_RAW_DATA_DIR}. Cannot warm-start")
         
-        field_data= np.load(config.FIELD_DATA_PATH, allow_pickle=True).item()
+        try:
+            field_data= np.load(config.FIELD_DATA_PATH, allow_pickle=True).item()
+        except Exception:
+            field_data={"Pint_downhole [MPa]_s": np.array([0.0]), "Zeit [s]": np.array([0.0])} #safeguar null array for avoid crash
+        
+    
 
         for file_path in history_files:
             try:
@@ -70,6 +75,10 @@ class OptimizationIntegrator:
             suggested_point=self.evaluator.ask_next_point()
             pjack_val, wr_val= suggested_point[0], suggested_point[1]
             print(f"[Loop] Testing Parameters pjack: {pjack_val:.4f}, wr: {wr_val:.4f}")
+
+            if config.OUT_DIR.exists():
+                shutil.rmtree(config.OUT_DIR)
+            config.OUT_DIR.mkdir(parents=True, exist_ok=True)
 
             if config.IS_MESH_DYNAMIC: #position (here as static)
                 print("[Integrator] Compiling static baseline meshes in MESH_DIR...")
@@ -100,10 +109,6 @@ class OptimizationIntegrator:
                 is_dynamic=config.IS_MESH_DYNAMIC,
                 static_prefix=config.STATIC_MESH_PREFIX
             ) 
-
-            if config.OUT_DIR.exists():
-                shutil.rmtree(config.OUT_DIR)
-            config.OUT_DIR.mkdir(parents=True, exist_ok=True)
 
             print("[Loop] Executing OpenGeosys simulation...") #pure Python --> crossplatform
             ogs_cmd=[
@@ -139,7 +144,7 @@ class OptimizationIntegrator:
 
 if __name__=="__main__":
     runner=OptimizationIntegrator()
-    runner.run_optimization_loop(max_iterations=15)
+    runner.run_optimization_loop(max_iterations=5)
 
 
 
