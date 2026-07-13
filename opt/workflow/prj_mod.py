@@ -46,7 +46,7 @@ if __name__=="__main__":
         p_in=sys.argv[1]
         p_out=sys.argv[2]
         factors=json.loads(sys.argv[3])
-        is_dyn=sys.argv[4].lower()=='True'
+        is_dyn=sys.argv[4].lower()=='true'
         prefix=sys.argv[5]
 
         temp_prj(p_in,p_out,factors,is_dyn,prefix)

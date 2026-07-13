@@ -115,9 +115,9 @@ class OptimizationIntegrator:
             }
 
             calculated_k=fn.calculate_keff(factors_payload)
-            factors_payload['keff']=[calculated_k] 
-
+            factors_payload['keff']=calculated_k.tolist() if hasattr(calculated_k, 'tolist') else calculated_k 
             payload_json=json.dumps(factors_payload)
+
             prj_res=self._run_python_sub("prj_mod.py",[
                 config.TEMPLATE_PRJ.as_posix(),
                 config.RUNTIME_PRJ.as_posix(),
@@ -177,8 +177,47 @@ class OptimizationIntegrator:
             print("\n[Integrator] Optimization routine completed sucessfully.")
 
 if __name__=="__main__":
-    runner=OptimizationIntegrator()
+    # runner=OptimizationIntegrator()
+    # runner.run_optimization_loop(max_iterations=1)
+    import sys
+    print("\n Forced Debug")
+    print(f"Executed script path: {__file__}")
+
+    print("\n[Step 1] Initialising OpimizationIntegrator container...")
+    try:
+        runner=OptimizationIntegrator()
+        print("[Step 1 Sucess] Integrator initialized cleanly")
+    except Exception as e:
+        import traceback
+        print(f"initialization failed inside __init__: {e} ")
+        traceback.print_exc()
+        sys.exit(1)
+        
+    print("\n[Step 2] Testing skopt baseline isolated from OGS...")
+    
+    try:
+        from skopt import Optimizer
+        from skopt.space import Real 
+        print("skopt imported successfully")
+
+        test_space= [Real(3e6,4e6, name="pjack"), Real(0.1e6,0.6e6, name='wr')]
+        test_opt= Optimizer(dimensions=test_space,base_estimator="GP", random_state=42)
+        print("Empty optimizer instantiated")
+
+        test_opt.tell(runner.x_history, runner.y_history, fit=True)
+        print("SUCESS: skopt success with history")
+
+    except Exception as e:
+        import traceback
+        print(f"Skopt failed during fitting {e} ")
+        traceback.print_exc()
+        sys.exit(1)
+
+    print("\n[Step 3] Attempting manual loop invocation...")
     runner.run_optimization_loop(max_iterations=1)
+    print("Forced debug end")
+
+
 
 
 

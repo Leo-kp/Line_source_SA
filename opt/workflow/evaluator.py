@@ -1,5 +1,7 @@
 import numpy as np
 from skopt import Optimizer
+from skopt.learning import GaussianProcessRegressor
+from skopt.learning.gaussian_process.kernels import Matern
 from skopt.space import Real
 
 class BayesianEvaluator:
@@ -20,14 +22,33 @@ class BayesianEvaluator:
             Real(wr_min-wr_padding, wr_max+wr_padding,name='wr')
         ]
 
-        self.optimizer= Optimizer(
-            dimensions=self.search_space,
-            base_estimator="GP",
-            acq_func="EI",
+        robust_gp= GaussianProcessRegressor(
+            kernel=Matern(nu=2.5),
+            alpha=1e-6,
+            noise="gaussian",
+            normalize_y=True,
             random_state=42
         )
+        
+        self.optimizer= Optimizer(
+            dimensions=self.search_space,
+            base_estimator=robust_gp,
+            acq_func="EI",
+            random_state=42,
+        )
 
-        self.optimizer.tell(x_filtered,y_pure_floats,fit=True)
+        # self.optimizer= Optimizer(
+        #     dimensions=self.search_space,
+        #     base_estimator="GP",
+        #     acq_func="EI",
+        #     random_state=42,
+        #     base_estimator_kwargs={"noise":"gaussian"}
+        # )
+        try:
+            self.optimizer.tell(x_filtered,y_pure_floats,fit=True)
+            print("[Evaluator] Success: Optimizer successfully integrated the data...")
+        except Exception as e:
+            print(f"Crash error: {e}")
     
     def ask_next_point(self):
         "Ask skopt for next optimal [pjack,wr]"
