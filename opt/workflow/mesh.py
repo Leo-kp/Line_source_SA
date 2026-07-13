@@ -178,6 +178,7 @@ def save_combined_mesh(msh_file, output_path, fracture_label="fracture"):
 def generate_optimization_mesh(MSH_FILE=None):#wraper for safe execution in modules, None combined with if ...is None ensures dynamic udpate
     if MSH_FILE is None:
         MSH_FILE=config.ACTIVE_MESH_PATH
+    MSH_FILE= Path(MSH_FILE)
     h=0.7 #mesh as in field data
     create_rectangle_frac_mesh_v3(
         MSH_FILE,
@@ -201,4 +202,9 @@ def generate_optimization_mesh(MSH_FILE=None):#wraper for safe execution in modu
     save_combined_mesh(MSH_FILE, combined_vtu)
 
 if __name__=="__main__":
-    generate_optimization_mesh()
+    import sys
+    if len(sys.argv)>1:
+        active_mesh_path=sys.argv[1]
+        generate_optimization_mesh(active_mesh_path)
+        sys.exit(0)
+    sys.exit(0)
