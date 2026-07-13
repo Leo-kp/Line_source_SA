@@ -26,9 +26,9 @@ class OptimizationIntegrator:
             self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix()])
             # mesh.generate_optimization_mesh(config.ACTIVE_MESH_PATH) 
 
-        x_history, y_history = self._load_morris_history()
+        self.x_history, self.y_history = self._load_morris_history()
 
-        self.evaluator = BayesianEvaluator(x_history,y_history)
+        self.evaluator = BayesianEvaluator(self.x_history,self.y_history)
 
     def _run_python_sub(self,scritp_name:str,args:list) ->subprocess.CompletedProcess: #subprocess personalised
         cmd=[config.OGS_PYTHON_EXE,scritp_name]+args
@@ -55,8 +55,9 @@ class OptimizationIntegrator:
         try:
             field_data= pd.read_csv(config.FIELD_DATA_PATH, header=0)
             metadata_df= pd.read_csv(config.MORRIS_SAMPLES_CSV, header=0)
-        except TypeError:
-            raise print(f'Error: {e}')
+        except Exception as e:
+            print(f"[CRITICAL ERROR] Failed reading CSV metadata archives: {e}")
+            raise e
         
         for idx, file_path in enumerate(file_paths):
             try:
@@ -152,7 +153,7 @@ class OptimizationIntegrator:
             print("[Loop] Extracting data")
             try:
                 live_npy_path=config.RUN_DIR/f"iter_{iteration}_data.npy" #changing order to run subproccess
-                sub_res=self._run_python_sub("probing.py",[config.OUT_DIR.as_posix],live_npy_path.as_posix())
+                sub_res=self._run_python_sub("probing.py",[config.OUT_DIR.as_posix(),live_npy_path.as_posix()])
 
                 if sub_res.returncode !=0:
                     raise RuntimeError(f"probing.py failed: {sub_res.stderr}")
@@ -177,7 +178,7 @@ class OptimizationIntegrator:
 
 if __name__=="__main__":
     runner=OptimizationIntegrator()
-    runner.run_optimization_loop(max_iterations=155)
+    runner.run_optimization_loop(max_iterations=1)
 
 
 

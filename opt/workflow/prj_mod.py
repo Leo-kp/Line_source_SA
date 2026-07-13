@@ -39,16 +39,16 @@ def temp_prj(prj_in: Path, prj_out:Path,factors:dict, is_dynamic:bool,static_pre
 
     model.write_input(prj_out)
 
-    if __name__=="__main__":
-        import sys
-        import json
-        if len(sys.argv)>5:
-            p_in=sys.argv[1]
-            p_out=sys.argv[2]
-            factors=json.load(sys.argv[3])
-            is_dyn=sys.argv[4].lower()=='True'
-            prefix=sys.argv[5]
+if __name__=="__main__":
+    import sys
+    import json
+    if len(sys.argv)>5:
+        p_in=sys.argv[1]
+        p_out=sys.argv[2]
+        factors=json.loads(sys.argv[3])
+        is_dyn=sys.argv[4].lower()=='True'
+        prefix=sys.argv[5]
 
-            temp_prj(p_in,p_out,factors,is_dyn,prefix)
-            sys.exit(0)
-        sys.exit(1)
+        temp_prj(p_in,p_out,factors,is_dyn,prefix)
+        sys.exit(0)
+    sys.exit(1)
