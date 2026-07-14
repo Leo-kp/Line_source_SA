@@ -117,3 +117,10 @@ OPTIMISATION_CONFIG={
 
 }
 
+#------------------------
+#debug and level options
+DEBUG=True
+#options level: "none", "error", "warn", "info", "debug", "all"
+LOG_LEVEL="error" 
+LOG_FILENAME="ogs_log.txt"
+

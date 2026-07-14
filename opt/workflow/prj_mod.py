@@ -14,30 +14,35 @@ def temp_prj(prj_in: Path, prj_out:Path,factors:dict, is_dynamic:bool,static_pre
     xpath='./curves/curve[name="k_curve"]/values'
     medium=1
 
-    root_xml=model.root
-    meshes_block=root_xml.find("./meshes")
-
     try:
         model.replace_text(values_str,xpath)
         
-        if meshes_block is not None:
-            for mesh_element in meshes_block.findall('mesh axially_symmetric="true"'):
-                current_mesh_name= mesh_element.text.strip()
-                raw_filename= Path(current_mesh_name).name
+        xml_tree=model.tree
+        meshes_containers= xml_tree.findall(".//meshes")
 
-                if is_dynamic:
-                    mesh_element.text= raw_filename
-                else:
-                    mesh_element.text=f"{static_prefix}{raw_filename}"
-        else:
-            print("Warning: No <meshes> block in project file structure")
+        if meshes_containers:
+            meshes_block= meshes_containers[0]
+            
+            mesh_tags=meshes_block.findall("mesh")
 
+            for mesh_tag in mesh_tags:
+                if mesh_tag.text:
+                    current_mesh_name=mesh_tag.text.strip()
+                    raw_filename=Path(current_mesh_name).name
+
+                    if is_dynamic:
+                        new_mesh_name=raw_filename
+                    else:
+                        new_mesh_name=f"{static_prefix}{raw_filename}"
+
+                    mesh_tag.text=new_mesh_name
+
+        model.write_input(prj_out)
 
     except Exception as e:
-        print(f"CRITICAL ERROR in PRJ update: {e}")
-        raise # Stop the loop if the input file is not correctly updated
+        print(f"CRITICAL: Failed to modify ogstools XML tree: {e}")
+        raise e
 
-    model.write_input(prj_out)
 
 if __name__=="__main__":
     import sys

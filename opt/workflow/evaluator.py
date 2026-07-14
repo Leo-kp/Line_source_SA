@@ -22,28 +22,28 @@ class BayesianEvaluator:
             Real(wr_min-wr_padding, wr_max+wr_padding,name='wr')
         ]
 
-        robust_gp= GaussianProcessRegressor(
-            kernel=Matern(nu=2.5),
-            alpha=1e-6,
-            noise="gaussian",
-            normalize_y=True,
-            random_state=42
-        )
+        # robust_gp= GaussianProcessRegressor(
+        #     kernel=Matern(nu=2.5),
+        #     alpha=1e-6,
+        #     noise="gaussian",
+        #     normalize_y=True,
+        #     random_state=42
+        # )
         
+        # self.optimizer= Optimizer(
+        #     dimensions=self.search_space,
+        #     base_estimator=robust_gp,
+        #     acq_func="EI",
+        #     random_state=42,
+        # )
+
         self.optimizer= Optimizer(
             dimensions=self.search_space,
-            base_estimator=robust_gp,
+            base_estimator="GP",
             acq_func="EI",
             random_state=42,
         )
 
-        # self.optimizer= Optimizer(
-        #     dimensions=self.search_space,
-        #     base_estimator="GP",
-        #     acq_func="EI",
-        #     random_state=42,
-        #     base_estimator_kwargs={"noise":"gaussian"}
-        # )
         try:
             self.optimizer.tell(x_filtered,y_pure_floats,fit=True)
             print("[Evaluator] Success: Optimizer successfully integrated the data...")
@@ -56,5 +56,6 @@ class BayesianEvaluator:
     
     def tell_new_results(self, point, cost_score):
         "Updates GP surface with OGS results"
-        self.optimizer.tell(point,float(cost_score))
+        clean_point=[float(val) for val in point] #forcing native float
+        self.optimizer.tell(clean_point,float(cost_score))
     

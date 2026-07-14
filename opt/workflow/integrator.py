@@ -27,13 +27,35 @@ class OptimizationIntegrator:
             # mesh.generate_optimization_mesh(config.ACTIVE_MESH_PATH) 
 
         self.x_history, self.y_history = self._load_morris_history()
+        x_clean= [[float(val) for val in point] for point in self.x_history]
+        y_clean=[float(val) for val in self.y_history]
 
-        self.evaluator = BayesianEvaluator(self.x_history,self.y_history)
+        self.evaluator = BayesianEvaluator(x_clean,y_clean)
 
     def _run_python_sub(self,scritp_name:str,args:list) ->subprocess.CompletedProcess: #subprocess personalised
         cmd=[config.OGS_PYTHON_EXE,scritp_name]+args
         result=subprocess.run(cmd,capture_output=True,text=True)
         return result
+    
+    def run_ogs_simulation(self, ogs_cmd, debug, log_level,log_filepath):
+        """Subprocess for OGS"""
+
+        cmd=list(ogs_cmd)
+        if debug:
+            cmd+= ["-l",log_level]
+            Path(log_filepath).parent.mkdir(parents=True, exist_ok=True)
+
+            with open(log_filepath, "w") as log_file:
+                result=subprocess.run(
+                    cmd,
+                    stdout=log_file,
+                    stderr=subprocess.STDOUT,
+                    text=True
+                )
+        else:
+            result=subprocess.run(cmd,capture_output=True,text=True)
+        return result
+
 
     def _load_morris_history(self):
         """
@@ -144,11 +166,18 @@ class OptimizationIntegrator:
                  "-o", config.OUT_DIR.as_posix()
              ]
             
-            sim_result= subprocess.run(ogs_cmd,capture_output=True,text=True)
+            log_filepath=(Path(config.OUT_DIR)/config.LOG_FILENAME).as_posix()
+
+            sim_result=self.run_ogs_simulation(
+                ogs_cmd=ogs_cmd,
+                debug=config.DEBUG,
+                log_level=config.LOG_LEVEL,
+                log_filepath=log_filepath
+            )
+
             if sim_result.returncode !=0:
                 print(f"CRITICAL_ERROR: OGS simulation failed at iteration {iteration}!")
-                print(sim_result.stderr)
-                continue #safeguard continuing if breaks
+                continue #safeguard ? continuing if breaks
 
             print("[Loop] Extracting data")
             try:
@@ -177,48 +206,20 @@ class OptimizationIntegrator:
             print("\n[Integrator] Optimization routine completed sucessfully.")
 
 if __name__=="__main__":
-    # runner=OptimizationIntegrator()
-    # runner.run_optimization_loop(max_iterations=1)
-    import sys
-    print("\n Forced Debug")
-    print(f"Executed script path: {__file__}")
+    print("Initialization")
+    Integrator=OptimizationIntegrator()
 
-    print("\n[Step 1] Initialising OpimizationIntegrator container...")
+    print(f"Loaded config: DEBUG={config.DEBUG}, LOG_LEVEL={config.LOG_LEVEL}")
+    print(f"Output directory: {config.OUT_DIR}")
+
     try:
-        runner=OptimizationIntegrator()
-        print("[Step 1 Sucess] Integrator initialized cleanly")
-    except Exception as e:
-        import traceback
-        print(f"initialization failed inside __init__: {e} ")
-        traceback.print_exc()
-        sys.exit(1)
-        
-    print("\n[Step 2] Testing skopt baseline isolated from OGS...")
-    
-    try:
-        from skopt import Optimizer
-        from skopt.space import Real 
-        print("skopt imported successfully")
+        print("[Integrator] Starting optimization loop...")
+        result=Integrator.run_optimization_loop(max_iterations=2)
 
-        test_space= [Real(3e6,4e6, name="pjack"), Real(0.1e6,0.6e6, name='wr')]
-        test_opt= Optimizer(dimensions=test_space,base_estimator="GP", random_state=42)
-        print("Empty optimizer instantiated")
+        print("\n---Success---")
+        print("Optimization completed successfully.")
 
-        test_opt.tell(runner.x_history, runner.y_history, fit=True)
-        print("SUCESS: skopt success with history")
-
-    except Exception as e:
-        import traceback
-        print(f"Skopt failed during fitting {e} ")
-        traceback.print_exc()
-        sys.exit(1)
-
-    print("\n[Step 3] Attempting manual loop invocation...")
-    runner.run_optimization_loop(max_iterations=1)
-    print("Forced debug end")
-
-
-
-
-
+    except Exception as error:
+        print("\n---pipeline failed---")
+        print(f"Error details: {error}")
 
