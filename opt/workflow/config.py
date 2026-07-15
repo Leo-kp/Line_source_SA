@@ -94,7 +94,7 @@ DYNAMIC_MESH_PATH= OUT_DIR/MESH_FILENAME
 
 IS_MESH_DYNAMIC=False
 ACTIVE_MESH_PATH= DYNAMIC_MESH_PATH if IS_MESH_DYNAMIC else STATIC_MESH_PATH
-STATIC_MESH_PREFIX=f"../{MESH_DIR.name}"
+STATIC_MESH_PREFIX=f"../{MESH_DIR.name}/"
 
 def initialize_project_folders(): #not hanging execution, so wrapped in function
     for folder in [MESH_DIR, OUT_DIR, RUN_DIR,  DATA_DIR]:
@@ -121,6 +121,6 @@ OPTIMISATION_CONFIG={
 #debug and level options
 DEBUG=True
 #options level: "none", "error", "warn", "info", "debug", "all"
-LOG_LEVEL="error" 
+LOG_LEVEL="info" 
 LOG_FILENAME="ogs_log.txt"
 

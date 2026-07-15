@@ -1,7 +1,7 @@
 import numpy as np
 from skopt import Optimizer
-from skopt.learning import GaussianProcessRegressor
-from skopt.learning.gaussian_process.kernels import Matern
+# from skopt.learning import GaussianProcessRegressor
+# from skopt.learning.gaussian_process.kernels import Matern
 from skopt.space import Real
 
 class BayesianEvaluator:

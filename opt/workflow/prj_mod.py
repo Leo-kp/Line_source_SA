@@ -18,24 +18,19 @@ def temp_prj(prj_in: Path, prj_out:Path,factors:dict, is_dynamic:bool,static_pre
         model.replace_text(values_str,xpath)
         
         xml_tree=model.tree
-        meshes_containers= xml_tree.findall(".//meshes")
+        meshes_containers= xml_tree.findall(".//meshes/mesh")
 
-        if meshes_containers:
-            meshes_block= meshes_containers[0]
-            
-            mesh_tags=meshes_block.findall("mesh")
+        for mesh_tag in meshes_containers:
+            if mesh_tag.text:
+                current_mesh_name=mesh_tag.text.strip()
+                raw_filename=Path(current_mesh_name).name
 
-            for mesh_tag in mesh_tags:
-                if mesh_tag.text:
-                    current_mesh_name=mesh_tag.text.strip()
-                    raw_filename=Path(current_mesh_name).name
+                if is_dynamic:
+                    new_mesh_name=raw_filename
+                else:
+                    new_mesh_name=f"{static_prefix}{raw_filename}"
 
-                    if is_dynamic:
-                        new_mesh_name=raw_filename
-                    else:
-                        new_mesh_name=f"{static_prefix}{raw_filename}"
-
-                    mesh_tag.text=new_mesh_name
+                mesh_tag.text=new_mesh_name
 
         model.write_input(prj_out)
 
