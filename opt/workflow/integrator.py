@@ -122,19 +122,9 @@ class OptimizationIntegrator:
                 config.MESH_DIR.mkdir(parents=True, exist_ok=True)
                 self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix()])
 
-            factors_payload={ #initiating payload manually
-                    'k01':2e-15,
-                    'k02':1.0,
-                    'sma':2.0926206997084548e-10,
-                    'L':0.5,
-                    'pjack':pjack_val,
-                    'wr':wr_val,
-                    'b_dim':1.0,
-                    'sf0':2.8e-4,
-                    'p1':1.0,
-                    'p2':5.0e6,
-                    'keff':1.0
-            }
+            factors_payload=config.factors_payload
+            factors_payload['pjack']=pjack_val
+            factors_payload['wr']=wr_val
 
             calculated_k=fn.calculate_keff(factors_payload)
             factors_payload['keff']=calculated_k.tolist() if hasattr(calculated_k, 'tolist') else calculated_k 
@@ -181,11 +171,11 @@ class OptimizationIntegrator:
                     raise RuntimeError(f"probing.py failed: {sub_res.stderr}")
                 
                 extracted_bundle=np.load(live_npy_path,allow_pickle=True).item()
-                np.save(live_npy_path, extracted_bundle)
                 cost_score=fn.objective_function(extracted_bundle,field_data)
-                print(f"[Loop] Iteration Result Mismatch Cost: {cost_score:.6f}")
-
                 extracted_bundle["metadata"]= {'pjack':pjack_val,'wr':wr_val, 'iteration':iteration,'cost':cost_score}
+                np.save(live_npy_path, extracted_bundle)
+                
+                print(f"[Loop] Iteration Result Mismatch Cost: {cost_score:.6f}")
 
             except Exception as ex:
                 print(f"Error during post-processing iteration {iteration}: {ex}")

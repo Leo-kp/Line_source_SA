@@ -117,10 +117,27 @@ OPTIMISATION_CONFIG={
 
 }
 
+#--------------------------------------------------
+#factors setting (manual initialisation)
+
+factors_payload={ #still for further debug checking
+        'k01':2e-15,
+        'k02':1.0e-10,
+        'sma':2.0926206997084548e-10,
+        'L':0.5,
+        'pjack':3.6e6,
+        'wr':0.5e6,
+        'b_dim':1.0,
+        'sf0':2.8e-4,
+        'p1':1.0,
+        'p2':5.0e6,
+        'keff':1.0
+}
+
 #------------------------
 #debug and level options
 DEBUG=True
 #options level: "none", "error", "warn", "info", "debug", "all"
-LOG_LEVEL="info" 
+LOG_LEVEL="error" 
 LOG_FILENAME="ogs_log.txt"
 
