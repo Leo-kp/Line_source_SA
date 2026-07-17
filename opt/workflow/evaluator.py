@@ -10,16 +10,20 @@ class BayesianEvaluator:
 
         pjack_data= [point[0] for point in x_filtered]
         wr_data= [point[1] for point in x_filtered]
+        sf0_data= [point[2] for point in x_filtered] #***************************
 
         pjack_min, pjack_max= min(pjack_data), max(pjack_data)
         wr_min, wr_max= min(wr_data), max(wr_data)
+        sf0_min, sf0_max= min(sf0_data), max(sf0_data)
 
         pjack_padding=(pjack_max - pjack_min)*0.01
         wr_padding= (wr_max - wr_min)*0.01
+        sf0_padding= (sf0_max - sf0_min)*0.01
 
         self.search_space=[ #to avoid point outside search space is bounded
             Real(pjack_min-pjack_padding, pjack_max+pjack_padding,name='pjack'),
-            Real(wr_min-wr_padding, wr_max+wr_padding,name='wr')
+            Real(wr_min-wr_padding, wr_max+wr_padding,name='wr'),
+            Real(sf0_min-sf0_padding, sf0_max+sf0_padding,name='wr')
         ]
 
         # robust_gp= GaussianProcessRegressor(

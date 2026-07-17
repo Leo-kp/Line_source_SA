@@ -7,6 +7,7 @@ from pathlib import Path
 def temp_prj(prj_in: Path, prj_out:Path,factors:dict, is_dynamic:bool,static_prefix:str): 
 
     keff=factors['keff']
+    sf0=factors['sf0'] #*******************
 
     values_str = " ".join(map(str, keff))
 
@@ -16,7 +17,8 @@ def temp_prj(prj_in: Path, prj_out:Path,factors:dict, is_dynamic:bool,static_pre
 
     try:
         model.replace_text(values_str,xpath)
-        
+        model.replace_medium_property_value(mediumid=medium, name='storage', value=sf0, propertytype='Constant', valuetag='value') #3rd parameter
+
         xml_tree=model.tree
         meshes_containers= xml_tree.findall(".//meshes/mesh")
 

@@ -111,9 +111,10 @@ initialize_project_folders()
 OPTIMISATION_CONFIG={
         "bounds":{
             "pjack":(3.1e6,3.6e6),
-            "wr":(0.2e6,0.5e6)
+            "wr":(0.2e6,0.5e6),
+            "sf0":(2.0926206997084548e-10,8.5e-4) #third parameter
         },
-        "initial_guess":[3.43e6,0.4e6]
+        "initial_guess":[3.43e6,0.4e6,2e-4] #Adding third parameters
 
 }
 

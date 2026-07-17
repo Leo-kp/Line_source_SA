@@ -133,7 +133,7 @@
                 <property>
                     <name>storage</name>
                     <type>Constant</type>
-                    <value>8.5e-4</value>
+                    <value>2.8e-4</value>
                 </property>
             </properties>
         </medium>
@@ -225,16 +225,16 @@
             <name>q_in</name>
             <type>Function</type>
             <expression>(
-                    t &lt; 1750.009	?	2.99E-07 :
-                    t &lt; 1788.809	?	5.31E-05 :
-                    t &lt; 1904.409	?	1.14E-04:
-                    t &lt; 2074.009	?	2.04E-04 :
-                    t &lt; 2154.409	?	4.01E-04 :
-                    t &lt; 2325.409	?	6.02E-04 :
-                    t &lt; 2424.809	?	7.90E-04 :
-                    t &lt; 2511.409	?	7.54E-06:
-                    0
-                    )
+                t &lt; 1788.809	?	2.99E-07 :
+                t &lt; 1904.409	?	5.31E-05 :
+                t &lt; 2074.009	?	1.14E-04:
+                t &lt; 2154.409	?	2.04E-04 :
+                t &lt; 2325.409?	4.01E-04 :
+                t &lt; 2424.809	?	6.02E-04 :
+                t &lt; 2511.409	?	7.90E-04 :
+                t &lt; 2669.81 ? 0 :
+                0
+                )
             </expression>
         </parameter>
     </parameters>

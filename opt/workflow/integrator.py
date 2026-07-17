@@ -84,10 +84,11 @@ class OptimizationIntegrator:
                 row=metadata_df.iloc[idx]
                 pjack= float(row['pjack'])
                 wr=float(row['wr'])
+                sf0=float(row['sf0']) #3rd parameter
 
                 cost = fn.objective_function(run_dict,field_data)
 
-                x_history.append([pjack,wr])
+                x_history.append([pjack,wr,sf0])
                 y_history.append(float(cost))
             except  Exception as e:
                 print(f"Warning: skipping corrupted history file {file_path.name}. Error {e}")
@@ -106,12 +107,13 @@ class OptimizationIntegrator:
         cost_history=[]
 
         field_data= pd.read_csv(config.FIELD_DATA_PATH, header=0)
+        factors_payload=config.factors_payload  #***************************************************
 
         for iteration in range(1,max_iterations+1):
             print(f"\n--- interation {iteration}/{max_iterations} ---")
             suggested_point=self.evaluator.ask_next_point()
-            pjack_val, wr_val= suggested_point[0], suggested_point[1]
-            print(f"[Loop] Testing Parameters pjack: {pjack_val:.4f}, wr: {wr_val:.4f}")
+            pjack_val, wr_val,sf0_val= suggested_point[0], suggested_point[1],suggested_point[2]
+            print(f"[Loop] Testing Parameters pjack: {pjack_val:.4f}, wr: {wr_val:.4f},sf0: {sf0_val:.3e}") ##*****************************
 
             if config.OUT_DIR.exists():
                 shutil.rmtree(config.OUT_DIR)
@@ -122,9 +124,10 @@ class OptimizationIntegrator:
                 config.MESH_DIR.mkdir(parents=True, exist_ok=True)
                 self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix()])
 
-            factors_payload=config.factors_payload
+            
             factors_payload['pjack']=pjack_val
             factors_payload['wr']=wr_val
+            factors_payload['sf0']=sf0_val #****************************************************
 
             calculated_k=fn.calculate_keff(factors_payload)
             factors_payload['keff']=calculated_k.tolist() if hasattr(calculated_k, 'tolist') else calculated_k 
@@ -140,7 +143,6 @@ class OptimizationIntegrator:
             if prj_res.returncode!=0:
                 print(f"Error in prj_mod: {prj_res.stderr}")
                 continue
-
 
             print("[Loop] Executing OpenGeosys simulation...") #pure Python --> crossplatform
             ogs_cmd=[
@@ -172,7 +174,7 @@ class OptimizationIntegrator:
                 
                 extracted_bundle=np.load(live_npy_path,allow_pickle=True).item()
                 cost_score=fn.objective_function(extracted_bundle,field_data)
-                extracted_bundle["metadata"]= {'pjack':pjack_val,'wr':wr_val, 'iteration':iteration,'cost':cost_score}
+                extracted_bundle["metadata"]= {'pjack':pjack_val,'wr':wr_val, 'sf0': sf0_val, 'iteration':iteration,'cost':cost_score} #*************
                 np.save(live_npy_path, extracted_bundle)
                 
                 print(f"[Loop] Iteration Result Mismatch Cost: {cost_score:.6f}")
