@@ -18,8 +18,11 @@ BASE_DIR=CODE_DIR.parent if CODE_DIR.name=="workflow" else CODE_DIR
 # ----------------------------------------
 #OGS init and env
 
-MANUAL_OGS_PATH= r"C:\OGS_Binary\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
-OGS_PYTHON_EXE= r"C:\Miniforge-Data\envs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
+# MANUAL_OGS_PATH= r"C:\OGS_Binary\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
+# OGS_PYTHON_EXE= r"C:\Miniforge-Data\envs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
+MANUAL_OGS_PATH= r"D:\OGS_Executable\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
+OGS_PYTHON_EXE= r"D:\PyEnvs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
+
 def set_ogs_environment():
 
     if MANUAL_OGS_PATH:
@@ -123,15 +126,15 @@ OPTIMISATION_CONFIG={
 
 factors_payload={ #still for further debug checking
         'k01':2e-15,
-        'k02':1.0e-10,
+        'k02':5.0e-10,
         'sma':2.0926206997084548e-10,
-        'L':0.5,
+        'L':1.0,
         'pjack':3.6e6,
         'wr':0.5e6,
         'b_dim':1.0,
         'sf0':2.8e-4,
         'p1':1.0,
-        'p2':5.0e6,
+        'p2':12e6,# setting 3 times the maximum pressure in data field 5.0e6,
         'keff':1.0
 }
 

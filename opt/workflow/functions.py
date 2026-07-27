@@ -32,7 +32,7 @@ def calculate_keff(factors):
     k01=factors['k01']
     k02=factors['k02']
 
-    prev=np.linspace(p1,p2,50)
+    prev=np.linspace(p1,p2,300)
 
     tanh_term = np.tanh((prev - pjack) / wr)
     c=(k02 - k01) * 0.5

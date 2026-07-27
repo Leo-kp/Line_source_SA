@@ -23,7 +23,7 @@ class BayesianEvaluator:
         self.search_space=[ #to avoid point outside search space is bounded
             Real(pjack_min-pjack_padding, pjack_max+pjack_padding,name='pjack'),
             Real(wr_min-wr_padding, wr_max+wr_padding,name='wr'),
-            Real(sf0_min-sf0_padding, sf0_max+sf0_padding,name='wr')
+            Real(sf0_min-sf0_padding, sf0_max+sf0_padding,name='sf0')
         ]
 
         # robust_gp= GaussianProcessRegressor(

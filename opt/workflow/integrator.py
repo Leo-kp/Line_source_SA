@@ -211,7 +211,7 @@ if __name__=="__main__":
 
     try:
         print("[Integrator] Starting optimization loop...")
-        result=Integrator.run_optimization_loop(max_iterations=20)
+        result=Integrator.run_optimization_loop(max_iterations=2)
 
     except Exception as error:
         print("\n---pipeline failed---")

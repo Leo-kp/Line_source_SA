@@ -187,7 +187,7 @@ def generate_optimization_mesh(MSH_FILE=None):#wraper for safe execution in modu
         mesh_size= h/4,
         center_z=-40.6,
         r_well = 0.038,
-        length = 0.5,
+        length = 1.0,
         refine_well = h/20,  # Element size at the well
         refine_frac = h/30   # Element size along the fracture
     ) 
