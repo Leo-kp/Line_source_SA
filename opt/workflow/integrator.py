@@ -20,7 +20,7 @@ class OptimizationIntegrator:
         if not config.IS_MESH_DYNAMIC: 
             print("[Integrator] Compiling static baseline meshes in MESH_DIR...")
             config.MESH_DIR.mkdir(parents=True, exist_ok=True)
-            self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix()])
+            self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix(),str(config.factors_payload['L'])])
 
         self.x_history, self.y_history = self._load_morris_history()
         x_clean= [[float(val) for val in point] for point in self.x_history]
@@ -84,11 +84,14 @@ class OptimizationIntegrator:
                 row=metadata_df.iloc[idx]
                 pjack= float(row['pjack'])
                 wr=float(row['wr'])
-                sf0=float(row['sf0']) #3rd parameter
+                L=float(row['L'])
+                # sf0=float(row['sf0']) #3rd parameter
 
                 cost = fn.objective_function(run_dict,field_data)
 
-                x_history.append([pjack,wr,sf0])
+                x_history.append([pjack,wr,L]
+                                  #sf0]) #++++++++++++++++++++++++++++++++++++++
+                                  )
                 y_history.append(float(cost))
             except  Exception as e:
                 print(f"Warning: skipping corrupted history file {file_path.name}. Error {e}")
@@ -112,22 +115,25 @@ class OptimizationIntegrator:
         for iteration in range(1,max_iterations+1):
             print(f"\n--- interation {iteration}/{max_iterations} ---")
             suggested_point=self.evaluator.ask_next_point()
-            pjack_val, wr_val,sf0_val= suggested_point[0], suggested_point[1],suggested_point[2]
-            print(f"[Loop] Testing Parameters pjack: {pjack_val:.4f}, wr: {wr_val:.4f},sf0: {sf0_val:.3e}") ##*****************************
+            pjack_val, wr_val,L_val= suggested_point[0], suggested_point[1],suggested_point[2] #++++++++++++++++++++++++++
+            print(f"[Loop] Testing Parameters pjack: {pjack_val:.4f}, wr: {wr_val:.4f},L: {L_val:.4f}") ##*****************************
 
             if config.OUT_DIR.exists():
                 shutil.rmtree(config.OUT_DIR)
             config.OUT_DIR.mkdir(parents=True, exist_ok=True)
 
             if config.IS_MESH_DYNAMIC: 
-                print("[Integrator] Compiling static baseline meshes in MESH_DIR...")
+                print("[Integrator] Generating dynamic mesh with L={L_val:.4f} in OUT_DIR...")
                 config.MESH_DIR.mkdir(parents=True, exist_ok=True)
-                self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix()])
+                mesh_res=self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix(),str(L_val)])
+                if mesh_res.returncode !=0:
+                    print(f"CRITICAL: Mesh generation failed at iteration {iteration}")
+                    continue
 
-            
             factors_payload['pjack']=pjack_val
             factors_payload['wr']=wr_val
-            factors_payload['sf0']=sf0_val #****************************************************
+            #factors_payload['sf0']=sf0_val #****************************************************
+            factors_payload['L']=L_val
 
             calculated_k=fn.calculate_keff(factors_payload)
             factors_payload['keff']=calculated_k.tolist() if hasattr(calculated_k, 'tolist') else calculated_k 
@@ -174,7 +180,12 @@ class OptimizationIntegrator:
                 
                 extracted_bundle=np.load(live_npy_path,allow_pickle=True).item()
                 cost_score=fn.objective_function(extracted_bundle,field_data)
-                extracted_bundle["metadata"]= {'pjack':pjack_val,'wr':wr_val, 'sf0': sf0_val, 'iteration':iteration,'cost':cost_score} #*************
+                extracted_bundle["metadata"]= {'pjack':pjack_val,
+                                               'wr':wr_val,
+                                               'L': L_val,
+                                                #'sf0': sf0_val,
+                                                'iteration':iteration,
+                                                'cost':cost_score} #*************
                 np.save(live_npy_path, extracted_bundle)
                 
                 print(f"[Loop] Iteration Result Mismatch Cost: {cost_score:.6f}")

@@ -95,9 +95,12 @@ MESH_FILENAME= "symmetric_cylinder_3D.msh"
 STATIC_MESH_PATH =MESH_DIR / MESH_FILENAME
 DYNAMIC_MESH_PATH= OUT_DIR/MESH_FILENAME
 
-IS_MESH_DYNAMIC=False
+IS_MESH_DYNAMIC=True
 ACTIVE_MESH_PATH= DYNAMIC_MESH_PATH if IS_MESH_DYNAMIC else STATIC_MESH_PATH
 STATIC_MESH_PREFIX=f"../{MESH_DIR.name}/"
+
+def get_target_mesh_dir():
+     return OUT_DIR if IS_MESH_DYNAMIC else MESH_DIR
 
 def initialize_project_folders(): #not hanging execution, so wrapped in function
     for folder in [MESH_DIR, OUT_DIR, RUN_DIR,  DATA_DIR]:
@@ -115,9 +118,9 @@ OPTIMISATION_CONFIG={
         "bounds":{
             "pjack":(3.1e6,3.6e6),
             "wr":(0.2e6,0.5e6),
-            "sf0":(2.0926206997084548e-10,8.5e-4) #third parameter
+            "L":(0.4,20) #third parameter
         },
-        "initial_guess":[3.43e6,0.4e6,2e-4] #Adding third parameters
+        "initial_guess":[3.43e6,0.4e6,1] #Adding third parameters
 
 }
 

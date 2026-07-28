@@ -1,7 +1,7 @@
 import numpy as np
 from skopt import Optimizer
-# from skopt.learning import GaussianProcessRegressor
-# from skopt.learning.gaussian_process.kernels import Matern
+from skopt.learning import GaussianProcessRegressor
+from skopt.learning.gaussian_process.kernels import Matern
 from skopt.space import Real
 
 class BayesianEvaluator:
@@ -10,49 +10,57 @@ class BayesianEvaluator:
 
         pjack_data= [point[0] for point in x_filtered]
         wr_data= [point[1] for point in x_filtered]
-        sf0_data= [point[2] for point in x_filtered] #***************************
+        # sf0_data= [point[2] for point in x_filtered] #***************************
+        L_data= [point[2] for point in x_filtered]
 
-        pjack_min, pjack_max= min(pjack_data), max(pjack_data)
-        wr_min, wr_max= min(wr_data), max(wr_data)
-        sf0_min, sf0_max= min(sf0_data), max(sf0_data)
+        def get_padded_bounds(data):
+            d_min, d_max = min(data), max(data)
+            padding = (d_max - d_min) * 0.01 if d_max > d_min else 1e-6
+            return d_min - padding, d_max + padding
 
-        pjack_padding=(pjack_max - pjack_min)*0.01
-        wr_padding= (wr_max - wr_min)*0.01
-        sf0_padding= (sf0_max - sf0_min)*0.01
+        pjack_min, pjack_max= get_padded_bounds(pjack_data)
+        wr_min, wr_max= get_padded_bounds(wr_data)
+        #sf0_min, sf0_max= get_padded_bounds(wr_data)
+        L_min, L_max= get_padded_bounds(L_data)
 
-        self.search_space=[ #to avoid point outside search space is bounded
-            Real(pjack_min-pjack_padding, pjack_max+pjack_padding,name='pjack'),
-            Real(wr_min-wr_padding, wr_max+wr_padding,name='wr'),
-            Real(sf0_min-sf0_padding, sf0_max+sf0_padding,name='sf0')
+        self.search_space = [
+            Real(pjack_min, pjack_max, name='pjack'),
+            Real(wr_min, wr_max, name='wr'),
+           # Real(sf0_min, sf0_max, name='sf0'),
+            Real(max(0.4,L_min), L_max, name='L')
         ]
 
-        # robust_gp= GaussianProcessRegressor(
-        #     kernel=Matern(nu=2.5),
-        #     alpha=1e-6,
-        #     noise="gaussian",
-        #     normalize_y=True,
-        #     random_state=42
-        # )
-        
-        # self.optimizer= Optimizer(
-        #     dimensions=self.search_space,
-        #     base_estimator=robust_gp,
-        #     acq_func="EI",
-        #     random_state=42,
-        # )
 
+        robust_gp= GaussianProcessRegressor(
+            kernel=Matern(nu=2.5),
+            alpha=1e-6,
+            noise="gaussian",
+            normalize_y=True,
+            random_state=42
+        )
+        
         self.optimizer= Optimizer(
             dimensions=self.search_space,
-            base_estimator="GP",
+            base_estimator=robust_gp,
             acq_func="EI",
             random_state=42,
         )
+
+        # self.optimizer= Optimizer(
+        #     dimensions=self.search_space,
+        #     base_estimator="GP",
+        #     acq_func="EI",
+        #     random_state=42,
+        # )
 
         try:
             self.optimizer.tell(x_filtered,y_pure_floats,fit=True)
             print("[Evaluator] Success: Optimizer successfully integrated the data...")
         except Exception as e:
+            import traceback
             print(f"Crash error: {e}")
+            print("Exact Crash Cause:")
+            traceback.print_exc()
     
     def ask_next_point(self):
         "Ask skopt for next optimal [pjack,wr]"

@@ -20,7 +20,7 @@ def create_rectangle_frac_mesh_v3(
     mesh_size: float,
     center_z: float = 0.0,
     r_well: float = 0.01,
-    length: float = 8.0,
+    length: float = 1.0,
     refine_well: float = 0.05,  # Element size at the well
     refine_frac: float = 0.02   # Element size along the fracture
 ) -> None:
@@ -175,10 +175,11 @@ def save_combined_mesh(msh_file, output_path, fracture_label="fracture"):
 
     #----------------------------------------------------
 
-def generate_optimization_mesh(MSH_FILE=None):#wraper for safe execution in modules, None combined with if ...is None ensures dynamic udpate
+def generate_optimization_mesh(MSH_FILE=None,length:float=1.0):#wraper for safe execution in modules, None combined with if ...is None ensures dynamic udpate
     if MSH_FILE is None:
         MSH_FILE=config.ACTIVE_MESH_PATH
     MSH_FILE= Path(MSH_FILE)
+    target_vtu_dir = config.get_target_mesh_dir()
     h=0.7 #mesh as in field data
     create_rectangle_frac_mesh_v3(
         MSH_FILE,
@@ -187,24 +188,26 @@ def generate_optimization_mesh(MSH_FILE=None):#wraper for safe execution in modu
         mesh_size= h/4,
         center_z=-40.6,
         r_well = 0.038,
-        length = 1.0,
+        length = length,
         refine_well = h/20,  # Element size at the well
         refine_frac = h/30   # Element size along the fracture
     ) 
 
     meshes = ot.Meshes.from_gmsh(MSH_FILE, log=False)
     for name, mesh in meshes.items():
-        vtu_path = (config.MESH_DIR / f"rectangle_{name}.vtu").as_posix()
+        vtu_path = (target_vtu_dir / f"rectangle_{name}.vtu").as_posix()
         pv.save_meshio(vtu_path, mesh)
         #print(f"Saved {vtu_path}")
 
-    combined_vtu = (config.MESH_DIR / "combined_fracture_mesh.vtu").as_posix()
+    combined_vtu = (target_vtu_dir / "combined_fracture_mesh.vtu").as_posix()
     save_combined_mesh(MSH_FILE, combined_vtu)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     import sys
-    if len(sys.argv)>1:
-        active_mesh_path=sys.argv[1]
-        generate_optimization_mesh(active_mesh_path)
+    if len(sys.argv) > 1:
+        active_mesh_path = sys.argv[1]
+        default_L = config.factors_payload.get('L', 1.0)
+        frac_length = float(sys.argv[2]) if len(sys.argv) > 2 else default_L
+        generate_optimization_mesh(active_mesh_path, length=frac_length)
         sys.exit(0)
     sys.exit(0)
