@@ -18,10 +18,10 @@ BASE_DIR=CODE_DIR.parent if CODE_DIR.name=="workflow" else CODE_DIR
 # ----------------------------------------
 #OGS init and env
 
-# MANUAL_OGS_PATH= r"C:\OGS_Binary\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
-# OGS_PYTHON_EXE= r"C:\Miniforge-Data\envs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
-MANUAL_OGS_PATH= r"D:\OGS_Executable\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
-OGS_PYTHON_EXE= r"D:\PyEnvs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
+MANUAL_OGS_PATH= r"C:\OGS_Binary\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
+OGS_PYTHON_EXE= r"C:\Miniforge-Data\envs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
+# MANUAL_OGS_PATH= r"D:\OGS_Executable\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
+# OGS_PYTHON_EXE= r"D:\PyEnvs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
 
 def set_ogs_environment():
 
@@ -112,17 +112,17 @@ def initialize_project_folders(): #not hanging execution, so wrapped in function
 initialize_project_folders()
 
 #------------------------------------------
-#bounds and factors to optmise
+#bounds and factors to optmise (not use in historical morris-or- other with warn start from historic)
 
-OPTIMISATION_CONFIG={
-        "bounds":{
-            "pjack":(3.1e6,3.6e6),
-            "wr":(0.2e6,0.5e6),
-            "L":(0.4,20) #third parameter
-        },
-        "initial_guess":[3.43e6,0.4e6,1] #Adding third parameters
+# OPTIMISATION_CONFIG={
+#         "bounds":{
+#             "pjack":(3.1e6,3.75e6),
+#             "wr":(0.15e6,0.5e6),
+#             "L":(0.4,20) #third parameter
+#         },
+#         "initial_guess":[3.43e6,0.4e6,1.0] #Adding third parameters
 
-}
+# }
 
 #--------------------------------------------------
 #factors setting (manual initialisation)

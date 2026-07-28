@@ -10,8 +10,8 @@ class BayesianEvaluator:
 
         pjack_data= [point[0] for point in x_filtered]
         wr_data= [point[1] for point in x_filtered]
-        # sf0_data= [point[2] for point in x_filtered] #***************************
         L_data= [point[2] for point in x_filtered]
+        sf0_data= [point[3] for point in x_filtered] #***************************
 
         def get_padded_bounds(data):
             d_min, d_max = min(data), max(data)
@@ -20,20 +20,20 @@ class BayesianEvaluator:
 
         pjack_min, pjack_max= get_padded_bounds(pjack_data)
         wr_min, wr_max= get_padded_bounds(wr_data)
-        #sf0_min, sf0_max= get_padded_bounds(wr_data)
         L_min, L_max= get_padded_bounds(L_data)
+        sf0_min, sf0_max= get_padded_bounds(sf0_data)
 
         self.search_space = [
             Real(pjack_min, pjack_max, name='pjack'),
             Real(wr_min, wr_max, name='wr'),
-           # Real(sf0_min, sf0_max, name='sf0'),
-            Real(max(0.4,L_min), L_max, name='L')
+            Real(max(0.4,L_min), L_max, name='L'),
+            Real(sf0_min, sf0_max, name='sf0')
         ]
 
 
         robust_gp= GaussianProcessRegressor(
             kernel=Matern(nu=2.5),
-            alpha=1e-6,
+            alpha=1e-4,
             noise="gaussian",
             normalize_y=True,
             random_state=42
@@ -43,6 +43,8 @@ class BayesianEvaluator:
             dimensions=self.search_space,
             base_estimator=robust_gp,
             acq_func="EI",
+            acq_optimizer="sampling", #preveting stuck in boundaries
+            n_initial_points=0,# fixing preload data in history
             random_state=42,
         )
 
