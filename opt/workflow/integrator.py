@@ -82,15 +82,12 @@ class OptimizationIntegrator:
                 run_dict= np.load(file_path, allow_pickle=True).item()
 
                 row=metadata_df.iloc[idx]
-                pjack= float(row['pjack'])
-                wr=float(row['wr'])
-                L=float(row['L'])
-                sf0=float(row['sf0']) #4rd parameter
+                k01= float(row['k01'])
+                k02=float(row['k02'])
 
                 cost = fn.objective_function(run_dict,field_data)
 
-                x_history.append([pjack,wr,L,
-                                  sf0]) #++++++++++++++++++++++++++++++++++++++
+                x_history.append([k01,k02]) #++++++++++++++++++++++++++++++++++++++
                                   
                 y_history.append(float(cost))
             except  Exception as e:
@@ -115,8 +112,8 @@ class OptimizationIntegrator:
         for iteration in range(1,max_iterations+1):
             print(f"\n--- interation {iteration}/{max_iterations} ---")
             suggested_point=self.evaluator.ask_next_point()
-            pjack_val, wr_val,L_val,sf0_val= suggested_point[0], suggested_point[1],suggested_point[2],suggested_point[3] #++++++++++++++++++++++++++
-            print(f"[Loop] Testing Parameters, pjack: {pjack_val:.4f}, wr: {wr_val:.4f},L: {L_val:.4f}, sf0: {sf0_val:.4e}") ##*****************************
+            k01_val,k02_val= suggested_point[0], suggested_point[1] #++++++++++++++++++++++++++
+            print(f"[Loop] Testing Parameters, k01: {k01_val:.2e}, k02: {k02_val:.2e}") ##*****************************
 
             if config.OUT_DIR.exists():
                 shutil.rmtree(config.OUT_DIR)
@@ -129,13 +126,11 @@ class OptimizationIntegrator:
                 if mesh_res.returncode !=0:
                     print(f"CRITICAL: Mesh generation failed at iteration {iteration}")
                     continue
+            else: L_val=config.factors_payload.get("L",1.0) #defined just to avoid bug in static
 
-            factors_payload['pjack']=pjack_val
-            factors_payload['wr']=wr_val
+            factors_payload['k01']=k01_val
+            factors_payload['k02']=k02_val
             
-            factors_payload['L']=L_val
-            factors_payload['sf0']=sf0_val #****************************************************
-
             calculated_k=fn.calculate_keff(factors_payload)
             factors_payload['keff']=calculated_k.tolist() if hasattr(calculated_k, 'tolist') else calculated_k 
             payload_json=json.dumps(factors_payload)
@@ -181,10 +176,8 @@ class OptimizationIntegrator:
                 
                 extracted_bundle=np.load(live_npy_path,allow_pickle=True).item()
                 cost_score=fn.objective_function(extracted_bundle,field_data)
-                extracted_bundle["metadata"]= {'pjack':pjack_val,
-                                               'wr':wr_val,
-                                               'L': L_val,
-                                                'sf0': sf0_val,
+                extracted_bundle["metadata"]= {'k01':k01_val,
+                                               'k02':k02_val,
                                                 'iteration':iteration,
                                                 'cost':cost_score} #*************
                 np.save(live_npy_path, extracted_bundle)

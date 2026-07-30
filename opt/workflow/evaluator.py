@@ -1,50 +1,55 @@
 import numpy as np
 from skopt import Optimizer
 from skopt.learning import GaussianProcessRegressor
-from skopt.learning.gaussian_process.kernels import Matern
+from skopt.learning.gaussian_process.kernels import Matern, ConstantKernel as C
 from skopt.space import Real
 
 class BayesianEvaluator:
     def __init__(self, x_filtered,y_pure_floats):
         "Initialising optimiyer"
 
-        pjack_data= [point[0] for point in x_filtered]
-        wr_data= [point[1] for point in x_filtered]
-        L_data= [point[2] for point in x_filtered]
-        sf0_data= [point[3] for point in x_filtered] #***************************
+        k01_data= [point[0] for point in x_filtered]
+        k02_data= [point[1] for point in x_filtered]
+  
+        def get_log_padded_bounds(data,pad_margin=0.05):
+            valid_data=np.maximum(data,1e-18)
+            log_data=np.log10(valid_data)
 
-        def get_padded_bounds(data):
-            d_min, d_max = min(data), max(data)
-            padding = (d_max - d_min) * 0.01 if d_max > d_min else 1e-6
-            return d_min - padding, d_max + padding
+            log_min, log_max= np.min(log_data), np.max(log_data)
+            span=log_max-log_min if log_max > log_min else 1.0
 
-        pjack_min, pjack_max= get_padded_bounds(pjack_data)
-        wr_min, wr_max= get_padded_bounds(wr_data)
-        L_min, L_max= get_padded_bounds(L_data)
-        sf0_min, sf0_max= get_padded_bounds(sf0_data)
+            padded_log_min=log_min-(span*pad_margin)
+            padded_log_max=log_max+(span*pad_margin)
+
+            return 10**padded_log_min, 10**padded_log_max
+
+        k01_min, k01_max= get_log_padded_bounds(k01_data)
+        k02_min, k02_max= get_log_padded_bounds(k02_data)
 
         self.search_space = [
-            Real(pjack_min, pjack_max, name='pjack'),
-            Real(wr_min, wr_max, name='wr'),
-            Real(max(0.4,L_min), L_max, name='L'),
-            Real(sf0_min, sf0_max, name='sf0')
+            Real(k01_min, k01_max, name='k01'),
+            Real(k02_min,k02_max, name='k02'),
         ]
 
-
+        kernel= C(1.0,(1e-2,1e2))*Matern(
+            length_scale=[1.0,1.0],
+            length_scale_bounds=[0.1,10.0],
+            nu=2.5
+        )
         robust_gp= GaussianProcessRegressor(
-            kernel=Matern(nu=2.5),
-            alpha=1e-4,
-            noise="gaussian",
+            kernel=kernel,
+            noise=1e-6,
             normalize_y=True,
+            n_restarts_optimizer=10, #helping locate local maxima
             random_state=42
         )
         
         self.optimizer= Optimizer(
             dimensions=self.search_space,
             base_estimator=robust_gp,
-            acq_func="EI",
+            acq_func="LCB", #cost min.. or EI
             acq_optimizer="sampling", #preveting stuck in boundaries
-            n_initial_points=0,# fixing preload data in history
+            acq_func_kwargs={"kappa":5.0}, #search outside historical cluster
             random_state=42,
         )
 
@@ -65,7 +70,7 @@ class BayesianEvaluator:
             traceback.print_exc()
     
     def ask_next_point(self):
-        "Ask skopt for next optimal [pjack,wr]"
+        f"Ask skopt for next optimal [factors ]"
         return self.optimizer.ask()
     
     def tell_new_results(self, point, cost_score):

@@ -18,10 +18,12 @@ BASE_DIR=CODE_DIR.parent if CODE_DIR.name=="workflow" else CODE_DIR
 # ----------------------------------------
 #OGS init and env
 
-MANUAL_OGS_PATH= r"C:\OGS_Binary\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
-OGS_PYTHON_EXE= r"C:\Miniforge-Data\envs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
+#MANUAL_OGS_PATH= r"C:\OGS_Binary\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
+#OGS_PYTHON_EXE= r"C:\Miniforge-Data\envs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
 # MANUAL_OGS_PATH= r"D:\OGS_Executable\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
 # OGS_PYTHON_EXE= r"D:\PyEnvs\ogs_exc_313\python.exe" #When split env ogs and other, use path to env of python #sys.executable # when alltogether env
+MANUAL_OGS_PATH=r"C:\OGS_Exc\ogs-6.5.7-Windows-10.0.26200-python-3.13.7-utils\bin"
+OGS_PYTHON_EXE=r"C:\OGS_resources\envs\ogs_exc_313\python.exe"
 
 def set_ogs_environment():
 
@@ -79,7 +81,7 @@ RUN_DIR= BASE_DIR/"run"
 DATA_DIR=BASE_DIR/"data"
 MORRIS_DIR=BASE_DIR.parent
 
-VERSION="v12"
+VERSION="v8"
 RESULTS_DIR=MORRIS_DIR/f"results_{VERSION}"
 
 MORRIS_SAMPLES_CSV=RESULTS_DIR/f"morris_samples_{VERSION}.csv"
@@ -95,7 +97,7 @@ MESH_FILENAME= "symmetric_cylinder_3D.msh"
 STATIC_MESH_PATH =MESH_DIR / MESH_FILENAME
 DYNAMIC_MESH_PATH= OUT_DIR/MESH_FILENAME
 
-IS_MESH_DYNAMIC=True
+IS_MESH_DYNAMIC=False
 ACTIVE_MESH_PATH= DYNAMIC_MESH_PATH if IS_MESH_DYNAMIC else STATIC_MESH_PATH
 STATIC_MESH_PREFIX=f"../{MESH_DIR.name}/"
 
@@ -131,11 +133,11 @@ factors_payload={ #still for further debug checking
         'k01':2e-15,
         'k02':5.0e-10,
         'sma':2.0926206997084548e-10,
-        'L':1.0,
+        'L':0.4,
         'pjack':3.6e6,
-        'wr':0.5e6,
+        'wr':0.25e6,
         'b_dim':1.0,
-        'sf0':2.8e-4,
+        'sf0':3.5e-4,
         'p1':1.0,
         'p2':12e6,# setting 3 times the maximum pressure in data field 5.0e6,
         'keff':1.0
