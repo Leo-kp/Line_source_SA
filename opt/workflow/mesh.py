@@ -175,7 +175,7 @@ def save_combined_mesh(msh_file, output_path, fracture_label="fracture"):
 
     #----------------------------------------------------
 
-def generate_optimization_mesh(MSH_FILE=None):#wraper for safe execution in modules, None combined with if ...is None ensures dynamic udpate
+def generate_optimization_mesh(MSH_FILE=None,length:float=1.0):#wraper for safe execution in modules, None combined with if ...is None ensures dynamic udpate
     if MSH_FILE is None:
         MSH_FILE=config.ACTIVE_MESH_PATH
     MSH_FILE= Path(MSH_FILE)
@@ -187,7 +187,7 @@ def generate_optimization_mesh(MSH_FILE=None):#wraper for safe execution in modu
         mesh_size= h/4,
         center_z=-40.6,
         r_well = 0.038,
-        length = 1.0,
+        length = length,
         refine_well = h/20,  # Element size at the well
         refine_frac = h/30   # Element size along the fracture
     ) 
@@ -205,6 +205,8 @@ if __name__=="__main__":
     import sys
     if len(sys.argv)>1:
         active_mesh_path=sys.argv[1]
-        generate_optimization_mesh(active_mesh_path)
+        default_L=config.factors_payload.get('L',1.0)
+        frac_length=float(sys.argv[2]) if len(sys.argv)>2 else default_L
+        generate_optimization_mesh(active_mesh_path,length=frac_length)
         sys.exit(0)
     sys.exit(0)

@@ -124,11 +124,11 @@ OPTIMISATION_CONFIG={
 #--------------------------------------------------
 #factors setting (manual initialisation)
 
-factors_payload={ #still for further debug checking
+factors_payload={ 
         'k01':2e-15,
         'k02':5.0e-10,
         'sma':2.0926206997084548e-10,
-        'L':1.0,
+        'L':8.0,  #introduce here lengh of static frac
         'pjack':3.6e6,
         'wr':0.5e6,
         'b_dim':1.0,

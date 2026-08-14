@@ -1,5 +1,4 @@
 import numpy as np
-from scipy import special as sc 
 
 import meshio
 

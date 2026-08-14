@@ -7,7 +7,7 @@ from pathlib import Path
 def temp_prj(prj_in: Path, prj_out:Path,factors:dict, is_dynamic:bool,static_prefix:str): 
 
     keff=factors['keff']
-    sf0=factors['sf0'] #*******************
+    sf0=factors['sf0'] 
 
     values_str = " ".join(map(str, keff))
 

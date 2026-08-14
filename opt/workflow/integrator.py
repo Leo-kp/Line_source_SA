@@ -20,7 +20,7 @@ class OptimizationIntegrator:
         if not config.IS_MESH_DYNAMIC: 
             print("[Integrator] Compiling static baseline meshes in MESH_DIR...")
             config.MESH_DIR.mkdir(parents=True, exist_ok=True)
-            self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix()])
+            self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix(),str(config.factors_payload['L'])])
 
         self.x_history, self.y_history = self._load_morris_history()
         x_clean= [[float(val) for val in point] for point in self.x_history]
@@ -122,12 +122,12 @@ class OptimizationIntegrator:
             if config.IS_MESH_DYNAMIC: 
                 print("[Integrator] Compiling static baseline meshes in MESH_DIR...")
                 config.MESH_DIR.mkdir(parents=True, exist_ok=True)
-                self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix()])
+                self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix(),str(config.factors_payload['L'])])
 
             
             factors_payload['pjack']=pjack_val
             factors_payload['wr']=wr_val
-            factors_payload['sf0']=sf0_val #****************************************************
+            factors_payload['sf0']=sf0_val 
 
             calculated_k=fn.calculate_keff(factors_payload)
             factors_payload['keff']=calculated_k.tolist() if hasattr(calculated_k, 'tolist') else calculated_k 
@@ -211,7 +211,7 @@ if __name__=="__main__":
 
     try:
         print("[Integrator] Starting optimization loop...")
-        result=Integrator.run_optimization_loop(max_iterations=2)
+        result=Integrator.run_optimization_loop(max_iterations=20)
 
     except Exception as error:
         print("\n---pipeline failed---")

@@ -2,7 +2,7 @@
 *.pvd
 *.vtm
 _out_t/
-graphs/
 opt/data/
 opt/out/
 opt/run/
+opt/mesh
