@@ -1,3 +1,8 @@
 *.vtu
 *.pvd
 *.vtm
+_out_t/
+opt/data/
+opt/out/
+opt/run/
+opt/mesh

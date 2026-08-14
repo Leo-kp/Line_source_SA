@@ -224,15 +224,18 @@
         <parameter>
             <name>q_in</name>
             <type>Function</type>
-            <expression>(t &lt; 1794.21 ? 2.99E-07 :
-           t &lt; 1909.81 ? 5.57E-05 :
-           t &lt; 2079.81 ? 1.14E-04:
-           t &lt; 2160.01 ? 2.05E-04 :
-           t &lt; 2330.81 ? 4.05E-04 :
-           t &lt; 2430.41 ? 6.06E-04 :
-           t &lt; 2517.81 ? 7.97E-04 :
-           t &lt; 2669.81 ? 0 :
-           0)</expression>
+            <expression>(
+                t &lt; 1788.809	?	2.99E-07 :
+                t &lt; 1904.409	?	5.31E-05 :
+                t &lt; 2074.009	?	1.14E-04:
+                t &lt; 2154.409	?	2.04E-04 :
+                t &lt; 2325.409 ?	4.01E-04 :
+                t &lt; 2424.809	?	6.02E-04 :
+                t &lt; 2511.409	?	7.90E-04 :
+                t &lt; 2669.81 ? 0 :
+                0
+                )
+            </expression>
         </parameter>
     </parameters>
     <process_variables>
