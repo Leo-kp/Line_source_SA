@@ -70,7 +70,6 @@ os.environ["OPENBLAS_NUM_THREADS"]=str(USE_NUM_THREADS)
 
 print(f"[CONFIG] Env loaded. OGS threads manually set to: {USE_NUM_THREADS}")
 
-
 #---------------------------------------
 #Folder three and dirs with files
 MESH_DIR = BASE_DIR/"mesh"
