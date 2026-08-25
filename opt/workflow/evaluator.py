@@ -13,15 +13,24 @@ class BayesianEvaluator:
         L_data= [point[2] for point in x_filtered]
         sf0_data= [point[3] for point in x_filtered] #***************************
 
-        def get_padded_bounds(data):
+        def get_padded_bounds(data, lower_limit=None, upper_limit=None):
             d_min, d_max = min(data), max(data)
             padding = (d_max - d_min) * 0.01 if d_max > d_min else 1e-6
-            return d_min - padding, d_max + padding
+
+            padded_min = d_min - padding
+            padded_max = d_max + padding
+
+            if lower_limit is not None:
+                padded_min=max(lower_limit, padded_min)
+            if upper_limit is not None: 
+                padded_max= min(upper_limit,padded_max)
+
+            return padded_min, padded_max
 
         pjack_min, pjack_max= get_padded_bounds(pjack_data)
         wr_min, wr_max= get_padded_bounds(wr_data)
         L_min, L_max= get_padded_bounds(L_data)
-        sf0_min, sf0_max= get_padded_bounds(sf0_data)
+        sf0_min, sf0_max= get_padded_bounds(sf0_data,lower_limit=2.0926206997084548e-10)
 
         self.search_space = [
             Real(pjack_min, pjack_max, name='pjack'),
