@@ -1,0 +1,28 @@
+{
+    "metadata": {
+        "n_samples": 150,
+        "n_features": 4,
+        "feature_names": [
+            "sf0",
+            "pjack",
+            "wr",
+            "L"
+        ],
+        "data_hash": "ea8fb28a616d4bae1313d77bea207912",
+        "environment": {
+            "sklearn_version": "1.9.0",
+            "skopt_version": "0.10.2"
+        }
+    },
+    "performance_metrics": {
+        "best_cv_mae": 78496.55539725567,
+        "mean_test_r2": 0.9321837868267508,
+        "mean_test_rmse": 145346.0191369022
+    },
+    "scaling_paramters": {
+        "alpha": "1.49**2 * Matern(length_scale=0.794, nu=2.5) + WhiteKernel(noise_level=0)",
+        "kernel_str": "1.49**2 * Matern(length_scale=0.794, nu=2.5) + WhiteKernel(noise_level=0)",
+        "normalise_y": true,
+        "n_restarts_optimizer": 5
+    }
+}
