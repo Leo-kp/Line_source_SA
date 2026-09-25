@@ -111,7 +111,10 @@ def initialize_project_folders(): #not hanging execution, so wrapped in function
 initialize_project_folders()
 
 #------------------------------------------
-#bounds and factors to optmise (not use in historical morris-or- other with warn start from historic)
+#pipeline optimisation
+OPT_PIPELINE_DIR = BASE_DIR.parent/"pipelines_others"
+PIPELINE_NAME   =   "gp_tunning_opt5_v15_pipeline.pkl"
+PIPELINE_ARCHIVE = OPT_PIPELINE_DIR/PIPELINE_NAME
 
 # OPTIMISATION_CONFIG={
 #         "bounds":{

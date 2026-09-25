@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from scipy.interpolate import PchipInterpolator as Pchip
 
@@ -20,6 +21,28 @@ def objective_function(npyresult,datafield):
     rsme=np.sqrt(np.mean((p_interp-p_field)**2))
 
     return rsme
+
+
+def rmsle_ep(npyresult: dict,datafield: pd.DataFrame, epsilon: float = 100.0) -> np.array:
+    "ln(y + epsilon ) transformation"
+
+    t_source=np.array(npyresult["timevalues"])
+    p_source=np.array(npyresult["values"]) #values, either pressure or other variable
+    p_field=datafield["Pint_downhole [MPa]_s"]*1e6 #Pa values
+
+    # sort_idx= np.argsort(t_source) #sortingin case no order in output
+    # t_source=t_source[sort_idx]
+    # p_source=p_source[sort_idx]
+
+    f= Pchip(t_source,p_source)
+    p_interp=f(datafield["Zeit [s]"])
+
+    p_int_ln = np.log(p_interp + epsilon)
+    p_field_ln = np.log(p_field + epsilon)
+
+    rmsle=np.sqrt(np.mean((p_int_ln-p_field_ln)**2))
+
+    return rmsle
 
 #-----------------------------------------
 # keff calculator

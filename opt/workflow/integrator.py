@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 import json
+import joblib
 
 import config
 import functions as fn
@@ -23,10 +24,11 @@ class OptimizationIntegrator:
             self._run_python_sub("mesh.py",[config.ACTIVE_MESH_PATH.as_posix(),str(config.factors_payload['L'])])
 
         self.x_history, self.y_history = self._load_morris_history()
-        x_clean= [[float(val) for val in point] for point in self.x_history]
-        y_clean=[float(val) for val in self.y_history]
+        # x_clean= [[float(val) for val in point] for point in self.x_history]
+        # y_clean=[float(val) for val in self.y_history]
 
-        self.evaluator = BayesianEvaluator(x_clean,y_clean)
+        #self.evaluator = BayesianEvaluator(x_clean,y_clean)
+        self.evaluator = BayesianEvaluator(self.x_history,self.y_history, config.PIPELINE_ARCHIVE)
 
     def _run_python_sub(self,scritp_name:str,args:list) ->subprocess.CompletedProcess: #subprocess personalised
         cmd=[config.OGS_PYTHON_EXE,scritp_name]+args
@@ -87,7 +89,7 @@ class OptimizationIntegrator:
                 L=float(row['L'])
                 sf0=float(row['sf0']) #4rd parameter
 
-                cost = fn.objective_function(run_dict,field_data)
+                cost = fn.rmsle_ep(run_dict,field_data)
 
                 x_history.append([pjack,wr,L,
                                   sf0]) #++++++++++++++++++++++++++++++++++++++
@@ -96,10 +98,13 @@ class OptimizationIntegrator:
             except  Exception as e:
                 print(f"Warning: skipping corrupted history file {file_path.name}. Error {e}")
 
+        raw_columns =  ["pjack", "wr", "L", "sf0"]#update original order
+        x_history = pd.DataFrame(x_history, columns= raw_columns)
+
         print(f"[integrator] Succesfully matched {len(x_history)} prior Morris samples")
         return x_history,y_history
     
-    def run_optimization_loop(self, max_iterations: int=20, cost_tolerance:float=1e-4,target_cost:float=10000):#variable conditioning
+    def run_optimization_loop(self, max_iterations: int=20, cost_tolerance:float=1e-4,target_cost:float=0.025):#variable conditioning, target cost adjusted to type of error
         """Optimization loop with triple-conditioning
         :param max_iterations: condition 1--> hard maximum looping limit
         :param cost_tolerance: condition 2--> relative  improvement threshold
@@ -115,7 +120,7 @@ class OptimizationIntegrator:
         for iteration in range(1,max_iterations+1):
             print(f"\n--- interation {iteration}/{max_iterations} ---")
             suggested_point=self.evaluator.ask_next_point()
-            pjack_val, wr_val,L_val,sf0_val= suggested_point[0], suggested_point[1],suggested_point[2],suggested_point[3] #++++++++++++++++++++++++++
+            pjack_val, wr_val,sf0_val,L_val,= suggested_point['pjack'], suggested_point['wr'],suggested_point['sf0'],suggested_point['L'] #++++++++++++++++++++++++++
             print(f"[Loop] Testing Parameters, pjack: {pjack_val:.4f}, wr: {wr_val:.4f},L: {L_val:.4f}, sf0: {sf0_val:.4e}") ##*****************************
 
             if config.OUT_DIR.exists():
@@ -180,13 +185,22 @@ class OptimizationIntegrator:
                     raise RuntimeError(f"probing.py failed: {sub_res.stderr}")
                 
                 extracted_bundle=np.load(live_npy_path,allow_pickle=True).item()
-                cost_score=fn.objective_function(extracted_bundle,field_data)
+                cost_score=fn.rmsle_ep(extracted_bundle,field_data)
                 extracted_bundle["metadata"]= {'pjack':pjack_val,
                                                'wr':wr_val,
                                                'L': L_val,
                                                 'sf0': sf0_val,
                                                 'iteration':iteration,
-                                                'cost':cost_score} #*************
+                                                'cost':cost_score,
+                                                'cost_function': 'RMSLE',
+                                                'factor_units': 
+                                                    {
+                                                        "pjack": "Pa",
+                                                        "wr"   : "Pa",
+                                                        "L"    : "m",
+                                                        "sf0"  : "Pa-1",
+                                                    }
+                                                } #*************
                 np.save(live_npy_path, extracted_bundle)
                 
                 print(f"[Loop] Iteration Result Mismatch Cost: {cost_score:.6f}")
@@ -195,7 +209,7 @@ class OptimizationIntegrator:
                 print(f"Error during post-processing iteration {iteration}: {ex}")
                 continue 
             
-            self.evaluator.tell_new_results(suggested_point,cost_score)
+            self.evaluator.tell_new_results(cost_score)
             successful_iterations.append(iteration+1)
             cost_history.append(cost_score)
            
@@ -210,6 +224,9 @@ class OptimizationIntegrator:
                     print(f"[Loop] Convergence, relative change: {relative_change:.4f}")
                     print("Finishing looping by condition 2")
                     break
+
+            latest_pipeline = self.evaluator.current_pipeline()
+            joblib.dump(latest_pipeline, "gp_pipeline_latest.pkl")  
         else: #completing full iterations
             print("[Integrator] Optimization Loop completed by iterations")
             print("Finishing looping by condition 1")
@@ -223,7 +240,7 @@ if __name__=="__main__":
 
     try:
         print("[Integrator] Starting optimization loop...")
-        result=Integrator.run_optimization_loop(max_iterations=20)
+        result=Integrator.run_optimization_loop(max_iterations=2)
 
     except Exception as error:
         print("\n---pipeline failed---")

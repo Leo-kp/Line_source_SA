@@ -15,8 +15,8 @@ def extract_values(OUT_DIR):
     
     pvd_path = pvd_files[0]
     ms = ot.MeshSeries(pvd_path)
-    pressure=ot.variables.pressure
-    pressure= pressure.replace(output_unit="MPa")
+    # pressure=ot.variables.pressure
+    # pressure= pressure.replace(output_unit="MPa")
     
     ms_probes=ms.probe(points=coords)
     raw_pressure_array = ms_probes['pressure']
