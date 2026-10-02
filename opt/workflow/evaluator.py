@@ -50,7 +50,7 @@ class BayesianEvaluator:
 
         self.search_space = [bounds_dict[col] for col in self.pipeline_features ]
 
-        self.pre_trained_gp = pipeline.named_steps['gp']
+        self.pre_trained_gp_pipeline = pipeline
 
         x_ = x_filtered[self.pipeline_features]   #variable transformed
         x_ready = [[float(val) for val in col] for col in x_.values]
@@ -58,9 +58,9 @@ class BayesianEvaluator:
 
         self.optimizer= Optimizer(
             dimensions=self.search_space,
-            base_estimator=self.pre_trained_gp,
+            base_estimator=self.pre_trained_gp_pipeline,
             acq_func="EI",            #"EI", general
-            acq_optimizer="sampling", #"sampling", global
+            acq_optimizer="lbfgs", #"sampling", global
             n_initial_points=0,# fixing preload data in history
             random_state=42,
         )
@@ -111,50 +111,12 @@ class BayesianEvaluator:
 
         return [float(d[col]) for col in self.pipeline_features]
 
-    def current_gp(self):
-         """return lates GP"""
+    def current_pipeline(self):
+         """return lates GP + scaler"""
          if len(self.optimizer.models) > 0:
               return self.optimizer.models[-1]
-         return self.pre_trained_gp
+         return self.pre_trained_gp_pipeline
 
-    def current_pipeline(self):
-         if self.scaler is None:
-              raise ValueError("No scaler found")
 
-         return Pipeline([
-              ("scaler", self.scaler),
-              ("gp", self.current_gp())
-         ])
          
-##------------------------------------------------------------------------
-# if __name__=="__main__":
-#     import pandas as pd
 
-#     print("runing test")
-
-#     raw_df = pd.DataFrame(
-#         {"pjack": [10, 20, 30, 40, 50],
-#         "wr": [0.5, 0.6, 0.7, 0.8, 0.9],
-#         "L": [1, 2, 3, 4, 6],
-#         "sf0": [1e-2, 2e-2, 3e-3, 4e-3, 5e-3]
-#     })
-
-#     raw_df['log_sf0'] = np.log(raw_df['sf0'])
-#     working_df = raw_df[["pjack", "wr", "L", "log_sf0"]]
-
-#     raw_y = pd.Series([150, 106.0, 200, 350.0, 363.3])
-
- 
-#     x_load_h= raw_df #working_df.values.astype(float).tolist()#[[float(val) for val in raw_df[col]] for col in raw_df]
-#     y_load_h= raw_y.astype(float).to_list()#[float(val) for val in raw_y]
-
-#     evaluator = BayesianEvaluator(
-#         x_filtered= x_load_h,
-#         y_filtered= y_load_h,
-#         pipeline_path= r"C:\Users\penack5q\Activities\OpenGeoSys\github\Benchmarks\Line_source_SA\pipelines_others\gp_tunning_opt5_v15_pipeline.pkl"
-#     )
-
-#     suggested = evaluator.ask_next_point()
-#     cost_score = 142.5
-
-#     evaluator.tell_new_results(cost_score, suggested)
