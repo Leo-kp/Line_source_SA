@@ -1,0 +1,403 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<OpenGeoSysProject>
+    <meshes>
+        <mesh axially_symmetric="true">combined_fracture_mesh.vtu</mesh>
+        <mesh axially_symmetric="true">rectangle_bottom.vtu</mesh>
+        <mesh axially_symmetric="true">rectangle_top.vtu</mesh>
+        <mesh axially_symmetric="true">rectangle_well.vtu</mesh>
+        <mesh axially_symmetric="true">rectangle_boundary_R.vtu</mesh>
+        <mesh axially_symmetric="true">rectangle_fracture.vtu</mesh>
+        <mesh axially_symmetric="true">rectangle_intersection_point.vtu</mesh>
+    </meshes>
+        <curves>
+        <curve>
+            <name>k_curve</name>
+           <coords>
+            1.00000000e+00  4.01347759e+04  8.02685518e+04  1.20402328e+05 
+            1.60536104e+05  2.00669880e+05  2.40803656e+05  2.80937431e+05 
+            3.21071207e+05  3.61204983e+05  4.01338759e+05  4.41472535e+05 
+            4.81606311e+05  5.21740087e+05  5.61873863e+05  6.02007639e+05 
+            6.42141415e+05  6.82275191e+05  7.22408967e+05  7.62542742e+05 
+            8.02676518e+05  8.42810294e+05  8.82944070e+05  9.23077846e+05 
+            9.63211622e+05  1.00334540e+06  1.04347917e+06  1.08361295e+06 
+            1.12374673e+06  1.16388050e+06  1.20401428e+06  1.24414805e+06 
+            1.28428183e+06  1.32441561e+06  1.36454938e+06  1.40468316e+06 
+            1.44481693e+06  1.48495071e+06  1.52508448e+06  1.56521826e+06 
+            1.60535204e+06  1.64548581e+06  1.68561959e+06  1.72575336e+06 
+            1.76588714e+06  1.80602092e+06  1.84615469e+06  1.88628847e+06 
+            1.92642224e+06  1.96655602e+06  2.00668980e+06  2.04682357e+06 
+            2.08695735e+06  2.12709112e+06  2.16722490e+06  2.20735868e+06 
+            2.24749245e+06  2.28762623e+06  2.32776000e+06  2.36789378e+06 
+            2.40802756e+06  2.44816133e+06  2.48829511e+06  2.52842888e+06 
+            2.56856266e+06  2.60869643e+06  2.64883021e+06  2.68896399e+06 
+            2.72909776e+06  2.76923154e+06  2.80936531e+06  2.84949909e+06 
+            2.88963287e+06  2.92976664e+06  2.96990042e+06  3.01003419e+06 
+            3.05016797e+06  3.09030175e+06  3.13043552e+06  3.17056930e+06 
+            3.21070307e+06  3.25083685e+06  3.29097063e+06  3.33110440e+06 
+            3.37123818e+06  3.41137195e+06  3.45150573e+06  3.49163951e+06 
+            3.53177328e+06  3.57190706e+06  3.61204083e+06  3.65217461e+06 
+            3.69230838e+06  3.73244216e+06  3.77257594e+06  3.81270971e+06 
+            3.85284349e+06  3.89297726e+06  3.93311104e+06  3.97324482e+06 
+            4.01337859e+06  4.05351237e+06  4.09364614e+06  4.13377992e+06 
+            4.17391370e+06  4.21404747e+06  4.25418125e+06  4.29431502e+06 
+            4.33444880e+06  4.37458258e+06  4.41471635e+06  4.45485013e+06 
+            4.49498390e+06  4.53511768e+06  4.57525145e+06  4.61538523e+06 
+            4.65551901e+06  4.69565278e+06  4.73578656e+06  4.77592033e+06 
+            4.81605411e+06  4.85618789e+06  4.89632166e+06  4.93645544e+06 
+            4.97658921e+06  5.01672299e+06  5.05685677e+06  5.09699054e+06 
+            5.13712432e+06  5.17725809e+06  5.21739187e+06  5.25752565e+06 
+            5.29765942e+06  5.33779320e+06  5.37792697e+06  5.41806075e+06 
+            5.45819453e+06  5.49832830e+06  5.53846208e+06  5.57859585e+06 
+            5.61872963e+06  5.65886340e+06  5.69899718e+06  5.73913096e+06 
+            5.77926473e+06  5.81939851e+06  5.85953228e+06  5.89966606e+06 
+            5.93979984e+06  5.97993361e+06  6.02006739e+06  6.06020116e+06 
+            6.10033494e+06  6.14046872e+06  6.18060249e+06  6.22073627e+06 
+            6.26087004e+06  6.30100382e+06  6.34113760e+06  6.38127137e+06 
+            6.42140515e+06  6.46153892e+06  6.50167270e+06  6.54180647e+06 
+            6.58194025e+06  6.62207403e+06  6.66220780e+06  6.70234158e+06 
+            6.74247535e+06  6.78260913e+06  6.82274291e+06  6.86287668e+06 
+            6.90301046e+06  6.94314423e+06  6.98327801e+06  7.02341179e+06 
+            7.06354556e+06  7.10367934e+06  7.14381311e+06  7.18394689e+06 
+            7.22408067e+06  7.26421444e+06  7.30434822e+06  7.34448199e+06 
+            7.38461577e+06  7.42474955e+06  7.46488332e+06  7.50501710e+06 
+            7.54515087e+06  7.58528465e+06  7.62541842e+06  7.66555220e+06 
+            7.70568598e+06  7.74581975e+06  7.78595353e+06  7.82608730e+06 
+            7.86622108e+06  7.90635486e+06  7.94648863e+06  7.98662241e+06 
+            8.02675618e+06  8.06688996e+06  8.10702374e+06  8.14715751e+06 
+            8.18729129e+06  8.22742506e+06  8.26755884e+06  8.30769262e+06 
+            8.34782639e+06  8.38796017e+06  8.42809394e+06  8.46822772e+06 
+            8.50836149e+06  8.54849527e+06  8.58862905e+06  8.62876282e+06 
+            8.66889660e+06  8.70903037e+06  8.74916415e+06  8.78929793e+06 
+            8.82943170e+06  8.86956548e+06  8.90969925e+06  8.94983303e+06 
+            8.98996681e+06  9.03010058e+06  9.07023436e+06  9.11036813e+06 
+            9.15050191e+06  9.19063569e+06  9.23076946e+06  9.27090324e+06 
+            9.31103701e+06  9.35117079e+06  9.39130457e+06  9.43143834e+06 
+            9.47157212e+06  9.51170589e+06  9.55183967e+06  9.59197344e+06 
+            9.63210722e+06  9.67224100e+06  9.71237477e+06  9.75250855e+06 
+            9.79264232e+06  9.83277610e+06  9.87290988e+06  9.91304365e+06 
+            9.95317743e+06  9.99331120e+06  1.00334450e+07  1.00735788e+07 
+            1.01137125e+07  1.01538463e+07  1.01939801e+07  1.02341139e+07 
+            1.02742476e+07  1.03143814e+07  1.03545152e+07  1.03946490e+07 
+            1.04347827e+07  1.04749165e+07  1.05150503e+07  1.05551841e+07 
+            1.05953178e+07  1.06354516e+07  1.06755854e+07  1.07157192e+07 
+            1.07558529e+07  1.07959867e+07  1.08361205e+07  1.08762543e+07 
+            1.09163881e+07  1.09565218e+07  1.09966556e+07  1.10367894e+07 
+            1.10769232e+07  1.11170569e+07  1.11571907e+07  1.11973245e+07 
+            1.12374583e+07  1.12775920e+07  1.13177258e+07  1.13578596e+07 
+            1.13979934e+07  1.14381271e+07  1.14782609e+07  1.15183947e+07 
+            1.15585285e+07  1.15986622e+07  1.16387960e+07  1.16789298e+07 
+            1.17190636e+07  1.17591973e+07  1.17993311e+07  1.18394649e+07 
+            1.18795987e+07  1.19197324e+07  1.19598662e+07  1.20000000e+07
+            </coords>
+            <values>
+            2.03234414e-15 5.28208490e-14 1.30440092e-13 3.28231510e-13
+            8.36848305e-13 2.16194859e-12 5.67527847e-12 1.51808938e-11
+            4.12800056e-11 1.11888808e-10 2.85000964e-10 6.07755065e-10
+            7.95869827e-10 9.57549285e-10 1.06443738e-09 1.11192753e-09
+            1.11598363e-09 1.09809591e-09 1.07422404e-09 1.05251451e-09
+            1.03563416e-09 1.02355247e-09 1.01531080e-09 1.00629402e-09
+            </values>
+        </curve>
+    </curves>
+    <processes>
+        <process>
+            <name>LiquidFlow</name>
+            <type>LIQUID_FLOW</type>
+            <integration_order>2</integration_order>
+            <specific_body_force>0 0</specific_body_force>
+            <process_variables>
+                <process_variable>pressure</process_variable>
+            </process_variables>
+            <secondary_variables>
+                <secondary_variable internal_name="darcy_velocity" output_name="velocity"/>
+            </secondary_variables>
+            <equation_balance_type>volume</equation_balance_type>
+            <aperture_size>
+                <parameter>fracture_thickness</parameter>
+            </aperture_size>
+            <jacobian_assembler>
+                <type>CentralDifferences</type>
+                <epsilons>1e-08</epsilons>
+            </jacobian_assembler>
+        </process>
+    </processes>
+    <media>
+        <medium id="0">
+            <phases>
+                <phase>
+                    <type>AqueousLiquid</type>
+                    <properties>
+                        <property>
+                            <name>density</name>
+                            <type>Constant</type>
+                            <value>1000</value>
+                        </property>
+                        <property>
+                            <name>viscosity</name>
+                            <type>Constant</type>
+                            <value>0.001</value>
+                        </property>
+                    </properties>
+                </phase>
+            </phases>
+            <properties>
+                <property>
+                    <name>porosity</name>
+                    <type>Constant</type>
+                    <value>0.03</value>
+                </property>
+                <property>
+                    <name>permeability</name>
+                    <type>Constant</type>
+                    <value>2e-15</value>
+                </property>
+                <property>
+                    <name>reference_temperature</name>
+                    <type>Constant</type>
+                    <value>293.15</value>
+                </property>
+                <property>
+                    <name>storage</name>
+                    <type>Constant</type>
+                    <value>2.0926206997084548e-10</value>
+                </property>
+            </properties>
+        </medium>
+        <medium id="1">
+            <phases>
+                <phase>
+                    <type>AqueousLiquid</type>
+                    <properties>
+                        <property>
+                            <name>density</name>
+                            <type>Constant</type>
+                            <value>1000</value>
+                        </property>
+                        <property>
+                            <name>viscosity</name>
+                            <type>Constant</type>
+                            <value>0.001</value>
+                        </property>
+                    </properties>
+                </phase>
+            </phases>
+            <properties>
+                <property>
+                    <name>porosity</name>
+                    <type>Constant</type>
+                    <value>1</value>
+                </property>
+                <property>
+                    <name>permeability</name>
+                    <type>Curve</type>
+                    <curve>k_curve</curve>
+                    <independent_variable>liquid_phase_pressure</independent_variable>
+                </property>
+                <property>
+                    <name>reference_temperature</name>
+                    <type>Constant</type>
+                    <value>293.15</value>
+                </property>
+                <property>
+                    <name>storage</name>
+                    <type>Function</type>
+                           <value><expression>1e-11*liquid_phase_pressure</expression></value>
+                            <dvalue>
+                                <variable_name>liquid_phase_pressure</variable_name>
+                                <expression>1e-11</expression>
+                            </dvalue>
+                </property>
+            </properties>
+        </medium>
+    </media>
+    <time_loop>
+        <processes>
+            <process ref="LiquidFlow">
+
+                <nonlinear_solver>basic_newton</nonlinear_solver>
+                <time_discretization>
+                    <type>BackwardEuler</type>
+                </time_discretization>
+                <convergence_criterion>
+                    <type>DeltaX</type>
+                    <norm_type>NORM2</norm_type>
+                    <!-- <abstols>1e-2</abstols>
+                    <reltols>1e-5</reltols> -->
+                    <abstol>1e-2</abstol>
+                    <reltol>1e-5</reltol>
+                </convergence_criterion>
+                <time_stepping>
+                    <type>IterationNumberBasedTimeStepping</type>
+                    <t_initial>1750.009</t_initial>
+                    <t_end>2669.809</t_end>
+                    <!-- 3000 -->
+                    <initial_dt>1e-2</initial_dt>
+                    <minimum_dt>1.e-5</minimum_dt>
+                    <maximum_dt>5.0</maximum_dt>
+                    <number_iterations>1 10 20 40</number_iterations>
+                    <multiplier> 1.2 1.0 0.8 0.5</multiplier>
+                </time_stepping>
+             <!-- <nonlinear_solver>basic_picard</nonlinear_solver>
+                <convergence_criterion>
+                    <type>PerComponentDeltaX</type>
+                    <norm_type>NORM2</norm_type>
+                    <abstols>1.e-5</abstols>
+                    <reltols>1.e-5</reltols>
+                </convergence_criterion>
+                <time_discretization>
+                    <type>BackwardEuler</type>
+                </time_discretization>
+                <time_stepping>
+                    <type>IterationNumberBasedTimeStepping</type>
+                    <t_initial>1750.009</t_initial>
+                    <t_end>2669.809</t_end>
+                    <initial_dt>0.1</initial_dt>
+                    <minimum_dt>1e-5</minimum_dt>
+                    <maximum_dt>5</maximum_dt>
+                    <number_iterations>5  15  25  40  50</number_iterations>
+                    <multiplier>       1.5 1.2 1.0 0.6 0.4</multiplier>
+                </time_stepping> -->
+            </process>
+        </processes>
+        <output>
+            <type>VTK</type>
+            <prefix>BH10_20180718_40.6</prefix>
+            <timesteps>
+                    <pair>
+                        <repeat>50000</repeat>
+                        <each_steps>1</each_steps>
+                    </pair>
+            </timesteps>
+            <fixed_output_times> 
+                1750.009 1794.209 1909.809 2079.809 2160.009 2330.809 2430.409 2517.809
+            </fixed_output_times>
+            <variables>
+                <variable> pressure </variable>
+                <variable> velocity </variable>
+                <!-- <variable> OGS5_pressure </variable> -->
+            </variables>
+            <suffix>_ts_{:timestep}_t_{:time}</suffix>
+        </output>
+    </time_loop>
+    <parameters>
+
+        <parameter>
+        <name>fracture_thickness</name>
+        <type>Group</type>
+        <group_id_property>MaterialIDs</group_id_property>
+        <index_values>
+            <index>0</index>
+            <value>1.0</value>
+        </index_values>
+        <index_values>
+            <index>1</index>
+            <value>1e-4</value>
+        </index_values>
+        </parameter>
+
+        <parameter>
+            <name>p0</name>
+            <type>Constant</type>
+            <value>86316.0</value>
+        </parameter>
+        <parameter>
+            <name>p_tb</name>
+            <type>Constant</type>
+            <value>0</value>
+        </parameter>
+        <parameter>
+            <name>pi_bd</name>
+            <type>Constant</type>
+            <value>86316.0</value>
+        </parameter>
+        <parameter>
+            <name>constant_porosity_parameter</name>
+            <type>Constant</type>
+            <value>1</value>
+        </parameter>
+        <parameter>
+            <name>q_in</name>
+            <type>Function</type>
+            <expression>(
+                t &lt; 1788.809	?	2.99E-07 :
+                t &lt; 1904.409	?	5.31E-05 :
+                t &lt; 2074.009	?	1.14E-04:
+                t &lt; 2154.409	?	2.04E-04 :
+                t &lt; 2325.409 ?	4.01E-04 :
+                t &lt; 2424.809	?	6.02E-04 :
+                t &lt; 2511.409	?	7.90E-04 :
+                t &lt; 2669.81 ? 0 :
+                0
+                )
+            </expression>
+        </parameter>
+    </parameters>
+    <process_variables>
+        <process_variable>
+            <name>pressure</name>
+            <components>1</components>
+            <order>1</order>
+            <initial_condition>p0</initial_condition>
+
+            <source_terms>
+                <source_term>
+                    <mesh>rectangle_well</mesh>
+                    <type>Line</type>
+                    <parameter>q_in</parameter>
+                </source_term>
+            </source_terms>
+
+            <boundary_conditions>
+                <boundary_condition>
+                    <mesh>rectangle_bottom</mesh>
+                    <type>Neumann</type>
+                    <component>0</component>
+                    <parameter>p_tb</parameter>
+                </boundary_condition>
+                <boundary_condition>
+                    <mesh>rectangle_top</mesh>
+                    <type>Neumann</type>
+                    <component>0</component>
+                    <parameter>p_tb</parameter>
+                </boundary_condition>
+                <boundary_condition>
+                    <mesh>rectangle_boundary_R</mesh>
+                    <type>Dirichlet</type>
+                    <component>0</component>
+                    <parameter>pi_bd</parameter>
+                </boundary_condition>
+            </boundary_conditions>
+        </process_variable>
+    </process_variables>
+    <nonlinear_solvers>
+        <nonlinear_solver>
+            <name>basic_newton</name>
+            <type>Newton</type>
+            <max_iter>25</max_iter>
+            <linear_solver>general_linear_solver</linear_solver>
+            <!-- <name>basic_picard</name>
+            <type>Picard</type>
+            <max_iter>60</max_iter> -->
+        </nonlinear_solver>
+    </nonlinear_solvers>
+    <linear_solvers>
+        <linear_solver>
+            <name>general_linear_solver</name>
+            <eigen>
+                <solver_type>SparseLU</solver_type>
+                <scaling>true</scaling>
+            </eigen>
+            <!-- <lis>-i cg -p jacobi -tol 1e-12 -maxiter 10000</lis>
+            <eigen>
+                <solver_type>CG</solver_type>
+                <precon_type>DIAGONAL</precon_type>
+                <max_iteration_step>10000</max_iteration_step>
+                <error_tolerance>1e-12</error_tolerance>
+            </eigen>
+            <petsc>
+                <prefix>lf</prefix>
+                <parameters>-lf_ksp_type cg -lf_pc_type bjacobi -lf_ksp_rtol 1e-12 -lf_ksp_max_it 10000</parameters>
+            </petsc> -->
+        </linear_solver>
+    </linear_solvers>
+</OpenGeoSysProject>
