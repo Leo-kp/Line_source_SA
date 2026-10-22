@@ -2,8 +2,9 @@ Sensitivity Analysis for Line-Source infinite reservoir with STIMTEC example.
 results_v# folders are not to be erased: they contain SI and raw P(rw,t) results for analysis.
 
 
-V16 is the Morris sampling for SA
-V16t is a LHA oat sampling for direct best picking
+V16 is the Morris sampling for SA direct sigmoid
+V16t is a LHA oat sampling for direct best picking direct sigmoid
+v16t2 is LHA oat sampling with inverse (high to low) s sigmoid unlinked
 
 
 
