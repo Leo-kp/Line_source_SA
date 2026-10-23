@@ -2,14 +2,13 @@ Sensitivity Analysis for Line-Source infinite reservoir with STIMTEC example.
 results_v# folders are not to be erased: they contain SI and raw P(rw,t) results for analysis.
 
 
-V16 is the Morris sampling for SA
-V16t is a LHA oat sampling for direct best picking
+V1617t is cardiac k(p) and s(p) [cardiac shaped] LHA oat sampling direct best picking
+V18 is a LHA oat sampling for direct best picking with k(p) and s(p) [inverted sigmoid]
 
 
+Sensitivity Analysis was performed on boostrapping strategy
 
-Sensitivity Analysis was performed on dimensionles relative reference (to separate factor influences relatively) -> qualitative inferences
-
-In this (feature/s_function_1) branch/folder, the pressures are all processed in Pa (including optimisation). Some reports are in MPa (but the original data in Pa)
+In this (feature/k_s_function_1) branch/folder, the pressures are all processed in Pa (including optimisation). Some reports are in MPa (but the original data in Pa)
 
 Legacy archives/folders:
 
